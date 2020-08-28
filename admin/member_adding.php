@@ -1,10 +1,21 @@
 
 <?php
 
+
 /*
- *使用者按下「註冊」按鈕
+ *使用者按下「取消」按鈕
  */
-if (isset($_POST["btnRegister"])) {
+if(isset($_POST["btnCancel"])){
+	header("location: member_admin.php");
+	exit();
+  }
+
+
+
+/*
+ *使用者按下「新增」按鈕
+ */
+if (isset($_POST["btnConfirm"])) {
 
 	//檢查使用者輸入的使用者名稱是否已被註冊。
 	require_once "../sql/onnDB.php";
@@ -27,6 +38,7 @@ if (isset($_POST["btnRegister"])) {
 		$addPhoneNumber = $_POST["inputPhoneNumber"];
 		$bdate = gmdate('Y-m-d H:i:s', time() + 3600 * 8);
 		$addBirthday = $_POST["inputBirthday"];
+		$addAuthority = $_POST["inputAuthority"];
 		$sqlSTMT =<<<sqlSTMT
 		INSERT INTO `tbl_users` (`m_name`, `m_username`, `m_password`, `m_gender`, `m_email`, `m_phone`, `m_jointime`,`m_birthday`)
 		VALUES
@@ -53,7 +65,7 @@ if (isset($_POST["btnRegister"])) {
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>會員登入</title>
+	<title>新增會員</title>
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -73,8 +85,7 @@ if (isset($_POST["btnRegister"])) {
 	
 		<div class="container">
 			<br>
-			<p class="text-center">歡迎註冊CC購物</a></p>
-			<hr>
+
 
 
 			<div class="row justify-content-center">
@@ -82,7 +93,7 @@ if (isset($_POST["btnRegister"])) {
 					<div class="card">
 						<header class="card-header">
 							<div class="row" style="position: relative;">
-								<div class="col-6"><h4 class="card-title mt-2">註冊會員</h4></div>
+								<div class="col-6"><h4 class="card-title mt-2">新增會員</h4></div>
 								<!-- <div class="col-6" style="position: absolute; bottom: 0; right: 0;" ><p>己經有帳號了嗎 ? <a href="page-register.php"> 現在就登入！</a></p></div> -->
 							</div>
 						</header>
@@ -111,7 +122,7 @@ if (isset($_POST["btnRegister"])) {
 									<input type="email" id="inputEmail" name="inputEmail" class="form-control" placeholder="">
 									</div> <!-- form-group end.// -->
 								</div> <!-- form-row end.// -->
-
+								<div class="form-row">
 								<div class="form-group">
                                 <label>性別&nbsp;&nbsp;&nbsp;</label>
 
@@ -124,6 +135,23 @@ if (isset($_POST["btnRegister"])) {
 										<span class="form-check-label"> 女</span>
 									</label>
 								</div> <!-- form-group end.// -->
+								<div class="col form-group">
+								  <div class="form-row">
+									<div class="col-2"></div>
+									<label for=" inputAuthority" class="col-2 col-form-label">權限</label>
+									<div class="col-8">
+										<select id=" inputAuthority" name=" inputAuthority" class="form-control"
+											required="required">
+											<option value="member" selected >一般會員</option>
+											<option value="admin" >管理員</option>
+											<option value="readonly">禁止購物</option>
+											<option value="suspension">停權中</option>
+										</select>
+									</div>
+							      </div>
+								</div> <!-- form-group end.// -->
+							</div> <!-- form-row end.// -->
+
 								<div class="form-row">
 								<div class="col form-group">
 								        <label>電話</label>
@@ -136,12 +164,15 @@ if (isset($_POST["btnRegister"])) {
 								</div> <!-- form-row end.// -->
 
 								<div class="form-group text-right">
-									<button type="submit" class="btn btn-outline-primary" name="btnRegister" id="btnRegister" value="btnRegister"> 註冊 </button>
-								</div> <!-- form-group// -->
+								<button type="submit" class="btn btn-outline-success" name="btnConfirm" id="btnConfirm"
+									value="btnConfirm"> 確認 </button>
+								<button type="submit" class="btn btn-outline-secondary cancel" name="btnCancel" id="btnCancel"
+									value="btnCancel"  formnovalidate> 取消 </button>
+							</div> <!-- form-group// -->
+							
 
 							</form>
 						</article> <!-- card-body end .// -->
-						<div class="border-top card-body text-center">己經有帳號了嗎 ? <a href="/PID_Assignment/member/login.php">現在就登入！</a></div>
 					</div> <!-- card.// -->
 				</div> <!-- col.//-->
 

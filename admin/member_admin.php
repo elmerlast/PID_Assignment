@@ -1,12 +1,9 @@
 <?php 
-// require_once("connDB.php");
-// // $link = mysqli_connect("localhost", "root", "root", "lab0819db", 8889);
-// // mysqli_query($link, "set names utf-8");
-// $sqlStatement =<<<mulity
-//  select e.employeeId, firstName, lastName, e.cityId, cityName
-//      from city c join employee e on e.cityId = c.cityId;
-// mulity;
-// $result =mysqli_query($link, $sqlStatement);
+require_once("../sql/onnDB.php");
+$sqlStatement =<<<mulity
+ select * from tbl_users;
+mulity;
+$result =mysqli_query($link, $sqlStatement);
 
 ?>
 
@@ -23,30 +20,46 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
+.tables{
+width: 125%;
+height: 100%;
+table-layout: fixed;
+}
 
+.td_overflow
+{
+ max-width: 140px;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+}
 </style>
 
 
 </head>
 <body>
+
+
   
 <div class="container">
   <h2>會員列表</h2>
-  <table class="table table-hover">
+  <table class="table table-hover tables" >
     <thead class="thead-light">
       <tr>
-        <th>Firstname</th>
-        <th>Lastname</th>
-        <th>City</th>
+        <th>會員編號</th>
+        <th>姓名</th>
+        <th>使用者名稱</th>
+        <th>密碼</th>
+        <th>性別</th>
+        <th>電子郵件</th>
+        <th>電話</th>
+        <th>生日</th>
+        <th>加入時間</th>
+        <th>權限等級</th>
         <th>
-         <!-- 維持版面 -->
-         <span class = "float-right">
-        <a href ="./addEmployee.php" class="btn btn btn-outline-success btn-sm"><b>+</b></a>
-        </span>
-        <!-- 維持版面 -->
+        <a href ="./member_adding.php" class="btn btn btn-outline-success btn-sm"><i class="fa fa-plus "></i></a>
         </th>
       </tr>
     </thead>
@@ -54,15 +67,19 @@
 
     <?php while ($row = mysqli_fetch_assoc($result)){?>
       <tr>
-        <td><?= $row["firstName"] ?></td>
-        <td><?= $row["lastName"] ?></td>
-        <td><?= $row["cityName"] ?></td>
+        <td><?= $row["m_id"] ?></td>
+        <td><?= $row["m_name"] ?></td>
+        <td><?= $row["m_username"] ?></td>
+        <td class="td_overflow" title="<?= $row["m_password"] ?>" ><?= $row["m_password"] ?></td>
+        <td style=""><?= $row["m_gender"] ?></td>
+        <td class="td_overflow" title="<?= $row["m_email"] ?>"><?= $row["m_email"] ?></td>
+        <td><?= $row["m_phone"] ?></td>
+        <td class="td_overflow" title="<?= $row["m_birthday"] ?>"><?= $row["m_birthday"] ?></td>
+        <td class="td_overflow" title="<?= $row["m_jointime"] ?>"><?= $row["m_jointime"] ?></td>
+        <td><?= $row["m_level"] ?></td>
         <td>
-        <span class = "float-right">
-        <a href ="./editform.php?id=<?= $row["employeeId"]?>" class="btn btn btn-outline-success btn-sm">edit</a>
-        |
-        <a href ="./deleteEmployee.php?id=<?= $row["employeeId"]?>" class="btn btn btn-outline-danger btn-sm">delete</a>
-        </span>
+        <a href ="./member_update.php?id=<?= $row["m_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
+        <a href ="./member_delete.php?id=<?= $row["m_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
         </td>
       </tr>
     <?php } ?>
@@ -70,7 +87,6 @@
     </tbody>
   </table>
 </div>
-
 
 </body>
 </html>
