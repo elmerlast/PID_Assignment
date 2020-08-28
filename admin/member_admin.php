@@ -10,7 +10,7 @@ $result =mysqli_query($link, $sqlStatement);
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <title>CC購物會員管理系統</title>
   <meta charset="utf-8">

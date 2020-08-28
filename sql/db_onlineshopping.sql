@@ -38,18 +38,87 @@ VALUES
 ('王紹一', 'jib8cb2lk', '3b2966c0210e4e977d0b796cd1814e3545c2291c8884be1d90e7ec47c0f63d08', '男', 'member', 'unnosoleff-2307@yopmail.com', '0932919438', '2018-01-17 15:43:08', '1992-06-13');
 
 --
--- 建立地址(tbl_users)資料表結構
+-- 建立商品類別(tbl_category)資料表結構
 --
 
-CREATE TABLE `tbl_address` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) NOT NULL,
-  `address` varchar(200) NOT NULL,
-  `zipcode` int(10) NOT NULL,
-  PRIMARY KEY (`id`),
-  constraint `fk_address_user_id` foreign key (user_id) references tbl_users (id) ON UPDATE CASCADE ON DELETE CASCADE
+CREATE TABLE `tbl_category` (
+  `ca_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ca_name` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`ca_id`)
 )ENGINE=InnoDB;
 
+
+
+--
+-- 新增商品類別(tbl_category)資料表記錄
+--
+
+INSERT INTO `tbl_category` (`ca_name`)
+VALUES
+('拜亞動力'),('森海塞爾'),('愛科技'),('歌德');
+
+
+
+
+
+--
+-- 建立商品清單(tbl_product)資料表結構
+--
+
+CREATE TABLE `tbl_product` (
+  `prd_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ca_id` int(11) UNSIGNED NOT NULL,
+  `prd_name` varchar(100) DEFAULT NULL,
+  `prd_price` int(11) UNSIGNED DEFAULT NULL,
+  `prd_images` varchar(250) DEFAULT NULL,
+  `prd_description` text DEFAULT NULL,
+  PRIMARY KEY (`prd_id`),
+  constraint `fk_product_category_ca_id` foreign key (ca_id) references tbl_category (ca_id) ON UPDATE CASCADE
+)ENGINE=InnoDB;
+
+
+--
+-- 新增商品清單(tbl_product)資料表記錄
+--
+
+INSERT INTO `tbl_product` (`ca_id`,`prd_name`,`prd_price`,`prd_images`,`prd_description`)
+VALUES
+(1,'【Beyerdynamic】拜亞動力 T1 2nd generation 旗艦級半開放式耳罩耳機',40000,'./PID_Assignment/img/beyerdynamic_T1 2nd generation.jpg','拜亞動力的旗艦級半開放式耳罩耳機'),
+(2,'【SENNHEISER】森海塞爾 MOMENTUM 2.0 Wireless M2 AEBT 藍牙降噪無線耳罩式耳機',12500,'./PID_Assignment/img/momentum 2.0 wireless m2 aebt.jpg','森海塞爾的藍牙降噪無線耳罩式耳機'),
+(3,''),
+(4,'');
+
+
+
+
+
+CREATE TABLE `tbl_orders` (
+  `ord_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `m_id` int(11) UNSIGNED NOT NULL,
+  `ord_total` int(11) UNSIGNED DEFAULT NULL,
+  `ord_deliverfee` int(11) UNSIGNED DEFAULT NULL,
+  `ord_grandtotal` int(11) UNSIGNED DEFAULT NULL,
+  `customername` varchar(100) DEFAULT NULL,
+  `customeremail` varchar(100) DEFAULT NULL,
+  `customeraddress` varchar(100) DEFAULT NULL,
+  `customerphone`  varchar(100) DEFAULT NULL,
+  `paytype` enum('線上刷卡','ATM轉帳','貨到付款'),
+  PRIMARY KEY (`ord_id`),
+  constraint `fk_orders_users_m_id` foreign key (m_id) references tbl_users (m_id) ON UPDATE CASCADE
+)ENGINE=InnoDB;
+
+
+CREATE TABLE `tbl_orderdetail` (
+  `dets_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ord_id` int(11) UNSIGNED NOT NULL,
+  `prd_id` int(11) UNSIGNED NOT NULL,
+  `dets_name` varchar(100) DEFAULT NULL,
+  `dets_unitprice` int(11) UNSIGNED DEFAULT NULL,
+  `dets_quantity` int(11) UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`dets_id`),
+  constraint `fk_orderdetail_orders_ord_id` foreign key (ord_id) references tbl_orders (ord_id) ON UPDATE CASCADE ON DELETE CASCADE,
+  constraint `fk_orderdetail_product_prd_id` foreign key (prd_id) references tbl_product (prd_id) ON UPDATE CASCADE
+)ENGINE=InnoDB;
 
 
 
