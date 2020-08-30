@@ -4,5 +4,20 @@
 .price {
   color: ForestGreen;
   }
+
+
+.tables{
+width: 125%;
+height: 100%;
+table-layout: fixed;
+}
+
+.td_overflow
+{
+ max-width: 140px;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+}
   
  

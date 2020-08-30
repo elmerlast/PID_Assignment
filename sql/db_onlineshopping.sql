@@ -85,8 +85,7 @@ INSERT INTO `tbl_product` (`ca_id`,`prd_name`,`prd_price`,`prd_images`,`prd_desc
 VALUES
 (2,'【Beyerdynamic】拜亞動力 T1 2nd generation 旗艦級半開放式耳罩耳機',40000,'/PID_Assignment/img/beyerdynamic_T1 2nd generation.jpg','拜亞動力的旗艦級半開放式耳罩耳機'),
 (3,'【SENNHEISER】森海塞爾 MOMENTUM 2.0 Wireless M2 AEBT 藍牙降噪無線耳罩式耳機',12500,'/PID_Assignment/img/momentum 2.0 wireless m2 aebt.jpg','森海塞爾的藍牙降噪無線耳罩式耳機'),
-(4,'【AKG K701】 愛科技 K701 專業級 開放式監聽耳罩耳機',7200,'/PID_Assignment/img/akg k701.jpg','極深的頻率延伸,燦爛的高頻,和天鵝絨般柔順
-鬆軟的音色,強勁的低音,成為極完美的聲音!'),
+(4,'【AKG K701】 愛科技 K701 專業級 開放式監聽耳罩耳機',7200,'/PID_Assignment/img/akg k701.jpg','極深的頻率延伸,燦爛的高頻,和天鵝絨般柔順鬆軟的音色,強勁的低音,成為極完美的聲音!'),
 (5,'【GRADO】 歌德 Headphones RS2E [RS2E] j4shAv New from Japan EMS',25361,'/PID_Assignment/img/grado rS2e.jpg','富有鮮明色彩的音色。飽滿且有生命力的聲音表現使曲子聽起來格
 外熱情、歡快且栩栩如生。');
 
@@ -128,7 +127,20 @@ CREATE TABLE `tbl_orderdetail` (
 
 
 
-
+ }elseif(isset($_POST["btnDelete"])){
+      $cart->del_item($_POST["updatePrd_id"]);  
+      foreach ($items as $item){?> 
+      <tr>
+        <td><input type="hidden" name="updatePrd_id" value="<?= $item["id"] ?>" /><?= $item["info"] ?></td>
+        <td><?= $item["price"] ?></td>
+        <td><div class="col-5"><input id="updatePrd_price" name="updatePrice" type="text" class="form-control" value="<?= $item["qty"] ?>"></div></td>
+        <td><?= $item["subtotal"] ?></td>
+        <td>
+        <button name="btnDelete" id="btnDelete" type="submit" class="btn btn btn-danger btn-sm"
+                  value="btnDelete"><i class="fa fa-times "></i></button>
+        </td>
+      </tr>
+    <?php }//end of foreach
 
 
 
