@@ -1,26 +1,23 @@
 <?php 
 session_start();
-require_once "../sql/onnDB.php";
+require_once("../sql/onnDB.php");
 
-//透過session中的使用者名稱取得會員編號
-$sql = "select m_id from tbl_users where m_username = '{$_SESSION["uId"]}'; ";
-$result = mysqli_query($link, $sql);
-$row = mysqli_fetch_array($result);
-$mId = $row["m_id"];
+if(!isset($_GET["id"])){
+    die("id not found.");
+  }
+  
+  $id = $_GET["id"];
+  if(!is_numeric($id)){
+    die("id not a number.");
+  }
+  
+  $sql=<<<sqls
+  select dets_name, dets_unitprice, dets_quantity
+  from tbl_orderdetail where ord_id = $id
+  sqls;
+  $result =mysqli_query($link, $sql);
 
-//取得該會員的訂單
-$sql = <<<sql
-select ord_id, ord_paytype, ord_total, ord_purchasetime, ord_status
-from tbl_orders
-where m_id = {$mId};
-sql;
-$result =mysqli_query($link, $sql);
-
-
-
-
-
-
+  $orderTotal = 0;
 
 ?>
 
@@ -31,7 +28,7 @@ $result =mysqli_query($link, $sql);
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>我的訂單</title>
+<title>訂購項目</title>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -82,45 +79,34 @@ $result =mysqli_query($link, $sql);
   </nav>
 
   <div class="container">
-    <h1>我的訂單</h1>
+    <h1>訂購項目</h1>
     <table class="table table-hover">
   <thead class="thead-light">
     <tr>
-      <th scope="col">訂單編號</th>
-      <th scope="col">付款方式</th>
-      <th scope="col">總額</th>
-      <th scope="col">下訂時間</th>
-      <th scope="col">訂單狀態</th>
-      <th scope="col"></th>
+      <th scope="col">項目名稱</th>
+      <th scope="col">單價</th>
+      <th scope="col">數量</th>
+      <th scope="col">項目總計</th>
+
     </tr>
   </thead>
   <tbody>
-    <?php if(mysqli_num_rows($result) > 0){    
-    while ($row = mysqli_fetch_assoc($result)){?>
+   <?php while ($row = mysqli_fetch_assoc($result)){?>
       <tr>
-        <th scope="row"><?=$row["ord_id"] ?></th>
-           <td><?=$row["ord_paytype"]?></td>
-           <td><?=$row["ord_total"]?></td>  
-           <td><?=$row["ord_purchasetime"]?></td>  
-           <td><?=$row["ord_status"]?></td>
-           <td>
-             <a href ="./order_details.php?id=<?= $row["ord_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-info-circle "></i></a>
-             <a href ="./delete_order.php?id=<?= $row["ord_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
-           </td>  
-        <?php }//end of while
-        }else{?>
-        <td colspan="6">
-            <h5 style="text-align:center;"> 您目前沒有任何訂單。</h2>
-        </td>
-        <?php } ?>        
+        <th scope="row"><?=$row["dets_name"] ?></th>
+           <td><?=$row["dets_unitprice"]?></td>
+           <td><?=$row["dets_quantity"]?></td>  
+           <td><?=($row["dets_unitprice"] * $row["dets_quantity"])?></td>  
       </tr>
+      <?php $orderTotal += ($row["dets_unitprice"] * $row["dets_quantity"]); //計算訂單總額 ?>
+   <?php } ?>
   </tbody>
 </table>
-
+<div class="row"><div class="col-10"></div><div class="col-2"><h6>&nbsp;總計&nbsp;&nbsp;&nbsp;&nbsp;$<?=$orderTotal?></h6></div></div>
 <div class="row">
     <div class="col-10"></div>
     <div class="col-2">
-      <a href="/PID_Assignment/index.php" class="btn btn-info">&emsp;返回首頁&emsp;</a>
+      <a href="/PID_Assignment/member/order_list.php" class="btn btn-info">返回我的訂單</a>
     </div>
 </div>
 

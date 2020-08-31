@@ -144,10 +144,8 @@ if (isset($_POST["btnRemoveAll"])) {
     <?php }//end of foreach
      }else{ ?>
       <tr>
-        <td>
-          <div class="container text-center">
-              <label>您的購物車目前是空的。</label>
-          </div>
+        <td colspan="4">
+        <h5 style="text-align:center;"> 您的購物車目前是空的。</h2>
         </td>
       </tr>
 
@@ -162,14 +160,14 @@ if (isset($_POST["btnRemoveAll"])) {
   <div class="row"><div class="col-10"></div><div class="col-2"><h6>&nbsp;總計&nbsp;&nbsp;&nbsp;&nbsp;$<?=$cart->total?></h6></div></div>
   <div class="row">
   <div class="col-9"></div>
-    <div class="col-2 ">
-      <button name="btnRemoveAll" id="btnRemoveAll" type="submit" class="btn btn-outline-success float-right"
-                  value="btnRemoveAll">清空購物車</button>
-    </div>
-    <div class="col-1 ">
+    <div class="col-3  ">
+      <button name="btnRemoveAll" id="btnRemoveAll" type="submit" class="btn btn-outline-success "
+           value="btnRemoveAll">清空購物車</button>
       <button name="btnCheckout" id="btnCheckout" type="submit" class="btn btn-success float-right"
-                  value="btnCheckout" <?php if($_SESSION["itemCountTotal"] == 0) {echo "disabled";}?> >結帳</button>
+           value="btnCheckout" <?php if($_SESSION["itemCountTotal"] == 0) {echo "disabled";}?> >結帳</button>
     </div>
+
+
     
   </div>
     </form>
