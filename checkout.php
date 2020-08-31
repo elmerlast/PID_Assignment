@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <?php
 include "wfCart/wfcart.php";
 session_start();
@@ -7,27 +6,30 @@ if (!is_object($cart)) {
     $cart = new wfCart();
 }
 
-if (isset($_POST["btnAddToCart"])) {
-    $cart->add_item($_POST["prd_id"],1,$_POST["prd_price"],"{$_POST["prd_name"]}");
 
-    //取得購物車裡商品數量總數。
-    $items = $cart->get_contents();
-    $_SESSION["itemCountTotal"] = 0;
-    foreach($items as $item){
-    $_SESSION["itemCountTotal"] += $item["qty"];
-}
+
+
+
+if (isset($_POST["btnPlaceOrder"])) {
+
+  $_SESSION["orderName"] = $_POST["inputOrderName"];
+  $_SESSION["orderPhoneNumber"] = $_POST["inputPhoneNumber"];
+  $_SESSION["orderEmail"] = $_POST["inputEmail"];
+  $_SESSION["orderAddress"] = $_POST["inputAddress"];
+  $_SESSION["orderPaymentMethod"] = $_POST["radioPaymentMethod"];
+  header("location: /PID_Assignment/confirmorder.php");
+	exit();
+
+  
+
+
 }
 
 
 require_once "./sql/onnDB.php";
-
-//抓取MySQL資料庫中的商品分類資料。
-$sqlStatement = <<<categorysql
- select ca_name
- from tbl_category;
-categorysql;
-$catResult = mysqli_query($link, $sqlStatement);
-
+$sql = "select * from tbl_users where m_username = '{$_SESSION["uId"]}'; ";
+$result = mysqli_query($link, $sql);
+$row = mysqli_fetch_array($result);
 
 
 
@@ -62,185 +64,150 @@ $catResult = mysqli_query($link, $sqlStatement);
 
 <body>
 
-  <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
     <!-- Brand/logo -->
-    <a class="navbar-brand" href="#">CC音饗</a>
+    <a class="navbar-brand" href="/PID_Assignment/index.php">CC音饗</a>
 
     <!-- Links -->
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="#"><span class="fa fa-home"></span>首頁</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#"><span class="fa fa-user"></span> 登入</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <span class="fa fa-shopping-cart fa-lg" style="color:Beige"></span> <span
-            class="badge badge-pill badge-danger"><?=$_SESSION["itemCountTotal"] ?></span>
+    <?php if(isset($_SESSION["uId"])){?>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <?php echo "{$_SESSION["uId"]}";?>
         </a>
-
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="#">我的訂單</a>
+          <a class="dropdown-item" href="#">修改會員資料</a>
+        </div>
+      </li>
+      <?php } ?>
+      <li class="nav-item">
+        <a class="nav-link" href="/PID_Assignment/index.php"><span class="fa fa-home"></span>首頁</a>
+      </li>
+      <li class="nav-item">
+        <?php if(isset($_SESSION["uId"])){?>
+          <a class="nav-link" href="/PID_Assignment/index.php?signout=1"><span class="fa fa-sign-out"></span> 登出</a>
+        <?php }else{ ?>
+          <a class="nav-link" href="/PID_Assignment/member/login.php"><span class="fa fa-user"></span> 登入</a>
+        <?php } ?>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/PID_Assignment/cart.php">
+          <span class="fa fa-shopping-cart fa-lg" style="color:Beige"></span> <span
+            class="badge badge-pill badge-danger"><?php if(isset($_SESSION["itemCountTotal"])){ echo "{$_SESSION["itemCountTotal"]}";}else{echo "0";} ?></span>
+        </a>
       </li>
     </ul>
   </nav>
 
 
-
-
-
+<main>
   <div class="container">
-    <table class="table table-hover tables">
-      <thead class="thead-light">
-        <tr>
-          <th colspan="4">
-            <form>
-              <!-- <div class="form-group row">
-                <label for="text" class="col-2 col-form-label">搜尋商品：</label>
-                <div class="col-4">
-                  <input id="text" name="text" type="text" class="form-control">
+  <h2 style="text-align:center;">商品結帳</h2>
+  <form method="post" action="">
+  <table class="table" >
+    <thead >
+      <tr>
+        <th>商品名稱</th>
+        <th>價格</th>
+        <th>&nbsp;&nbsp;&nbsp;&nbsp;數量</th>
+        <th colspan="2">項目總計</th>
+      </tr>
+    </thead>
+    <tbody>
+    <?php 
+     $items = $cart->get_contents();
+     foreach ($items as $item){?> 
+      <tr>
+        <td><?= $item["info"] ?></td>
+        <td><?= $item["price"] ?></td>
+        <td><?= $item["qty"] ?></td>
+        <td><?= $item["subtotal"] ?></td>
+      </tr>
+    <?php }//end of foreach?>
+      
+    </tbody>
+  </table>
+  <div class="row"><div class="col-10"></div><div class="col-2"><h6>&nbsp;總計&nbsp;&nbsp;&nbsp;&nbsp;$<?=$cart->total?></h6></div></div>
+    </form>
+  </div>
+
+  <div class="container ">
+            <form class="form-horizontal" role="form" style="border:1px solid #ccc;" method="post" action="" >
+              <center>  <h2><br/>訂購人資訊</h2>  </center>
+			    
+				
+                <div class="form-group">
+                    <label for="inputOrderName" class="col-sm-3 control-label">姓名</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="inputOrderName" name="inputOrderName"  class="form-control" value="<?=$row["m_name"] ?>" required autofocus>
+                       
+                    </div>
                 </div>
-                <div class="col-1"><button name="submit" type="submit" class="btn btn-primary">Go</button></div> -->
-              <div class="input-group">
-                <input id="text" name="text" type="text" class="form-control" placeholder="請輸入商品名稱">
-                <div class="input-group-append">
-                  <button class="btn btn-primary" type="button">搜尋</button>
+				<div class="form-group">
+                    <label for="inputPhoneNumber" class="col-sm-3 control-label">電話</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="inputPhoneNumber" name="inputPhoneNumber"   class="form-control" value="<?=$row["m_phone"] ?>" required autofocus>
+                       
+                    </div>
                 </div>
-            </form>
-          </th>
-        </tr>
-        <tr>
-          <th colspan="4">
-            <form method="post" action="">
-              <div class="form-group row">
-                <label class="col-2" for="Categories">商品分類：</label>
-                <select id="Categories" name="Categories" class="col-4 form-control">
-                  <?php while ($row = mysqli_fetch_assoc($catResult)) {?>
-                  <option value="<?=$row["ca_name"]?>"
-                    <?php if ($row["ca_name"] == $_POST["Categories"]) {echo "selected";}?>><?=$row["ca_name"]?>
-                  </option>
-                  <?php }?>
-                </select>
-                <button name="btnCatFilter" id="btnCatFilter" type="submit" class="btn btn-primary"
-                  value="btnCatFilter">篩選</button>
-              </div>
-            </form>
+				<div class="form-group">
+                    <label for="inputEmail" class="col-sm-3 control-label">電子郵件</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="inputEmail"  name="inputEmail"  class="form-control" value="<?=$row["m_email"] ?>" required autofocus>
+                       
+                    </div>
+                </div>
+               
+                <div class="form-group">
+                    <label for="inputAddress" class="col-sm-3 control-label">地址</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="inputAddress" name="inputAddress"  class="form-control" required autofocus>
+                    </div>
+                </div>
 
-          </th>
-        </tr>
-      </thead>
+                <div class="form-group">
+                    <label class="control-label col-sm-3">付款方式</label>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label class="radio-inline">
+                                    <input type="radio" name="radioPaymentMethod" id="radioPaymentMethod" value="線上付款" required>線上付款
+                                </label>
+								<label class="radio-inline">
+                                    <input type="radio" name="radioPaymentMethod" id="radioPaymentMethod" value="ATM轉帳">ATM轉帳
+                                </label>
+								<label class="radio-inline">
+                                    <input type="radio" name="radioPaymentMethod" id="radioPaymentMethod" value="貨到付款">貨到付款
+                                </label>
+                            </div>
+                           
+                            </div>
+                            
+                                
+                            
+                        </div>
+                    </div>
+             
 
-    </table>
+                <div class="form-group">
+                    <div class="col text-center">
+                        <button type="submit" class="btn btn-info" name="btnPlaceOrder" id="btnPlaceOrder" value="btnPlaceOrder">確定</button>
+                    </div>
+                </div>
+            </form> <!-- /form -->
+            </div> <!-- /div -->
 
-    <div class="container">
-      <?php if (isset($_POST["btnCatFilter"]) && ($_POST["Categories"] != "全部產品")) { //使用者設定分類進行篩選的話：
+</main>
 
-    $sqlStatement = <<<categoryProductSql
-      select prd_name, prd_price, prd_images, prd_description, ca_name
-      from tbl_category
-      left join tbl_product
-      on tbl_category.ca_id = tbl_product.ca_id
-      where ca_name = '{$_POST["Categories"]}';
-      categoryProductSql;
-    $catProductResult = mysqli_query($link, $sqlStatement);
-
-    $itemPageCount = 0; //每列只顯示3個商品項目。
-    ?>
-
+<section>
+    <footer>
       <div class="row">
-
-        <?php while ($row = mysqli_fetch_assoc($catProductResult)) {?>
-
-
-        <div class="col-sm-4">
-          <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="<?=$row["prd_images"]?>" alt="沒有圖片">
-            <div class="card-body">
-              <h6 class="card-subtitle mb-2 text-muted"><?=$row["prd_name"]?></h6>
-              <p class="card-text price"><?="$" . $row["prd_price"]?></p>
-              <div class="row">
-                <div class="col">
-                  <form action="" method="post">
-                    <input type="hidden" name="prd_id" value="<?=$row["prd_id"]?>" />
-                    <input type="hidden" name="prd_price" value="<?=$row["prd_price"]?>" />
-                    <input type="hidden" name="prd_name" value="<?=$row["prd_name"]?>" />
-                    <button class="btn btn-danger" name="btnAddToCart" value="addItem" type="submit">加入購物車</button>
-                  </form>
-                </div>
-                <div class="col">
-                  <a href="#" class="btn btn-primary">詳細資訊</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <?php $itemPageCount += 1;
-        if ($itemPageCount >= 3) {?>
-
+        <div class="col-12"><h3>&nbsp;&nbsp;</h3></div>
       </div>
-      <!--end of row -->
-      <div class="row">
-
-        <?php
-        $itemPageCount = 0;
-        }?>
-
-
-
-        <?php }?>
-        <?php if ($itemPageCount < 3) {echo "</div><!--end of row -->";}?>
-
-
-
-        <?php } else { //不進行篩選的商品清單
-    $itemPageCount = 0;
-
-    $sqlStatement = <<<mulity
-    select prd_name, prd_price, prd_images, prd_description, prd_id
-    from tbl_product;
-    mulity;
-    $result = mysqli_query($link, $sqlStatement);
-    ?>
-        <div class="row">
-          <?php while ($row = mysqli_fetch_assoc($result)) {?>
-
-          <div class="col-sm-4">
-            <div class="card" style="width: 18rem;">
-              <img class="card-img-top" src="<?=$row["prd_images"]?>" alt="無法顯示圖片">
-              <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted"><?=$row["prd_name"]?></h6>
-                <p class="card-text price"><?="$" . $row["prd_price"]?></p>
-                <div class="row">
-                  <div class="col">
-                    <form action="" method="post">
-                      <input type="hidden" name="prd_id" value="<?=$row["prd_id"]?>" />
-                      <input type="hidden" name="prd_price" value="<?=$row["prd_price"]?>" />
-                      <input type="hidden" name="prd_name" value="<?=$row["prd_name"]?>" />
-                      <button class="btn btn-danger" name="btnAddToCart" value="addItem" type="submit">加入購物車</button>
-                    </form>
-                  </div>
-                  <div class="col">
-                    <a href="#" class="btn btn-primary">詳細資訊</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <?php $itemPageCount += 1;
-        if ($itemPageCount >= 3) {?>
-        </div>
-        <!--end of row -->
-        <div class="row">
-          <?php
-        $itemPageCount = 0;
-        }?>
-
-          <?php }?>
-          <?php if ($itemPageCount < 3) {echo "</div><!--end of row -->";}?>
-
-
-          <?php }?>
-        </div>
+    </footer>
+</section>
+ 
 
 </body>
 

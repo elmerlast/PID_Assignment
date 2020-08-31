@@ -19,13 +19,27 @@ session_start();
     <?php
       switch ($_SESSION["msgStatus"]) {
         case 1:
-          echo "登入成功!，2秒後自動跳轉到龬路銀行頁面";
+          echo "登入成功!2秒後自動跳轉到首頁";
+          header("Refresh:2; url=/PID_Assignment/index.php");
+          exit();
           break;
         case 2:
-          echo "變數是 1";
+          echo "變數是 2";
           break;
         case 3:
-          echo "變數是 2";
+          echo "您已登出，2秒後自動跳轉到首頁";
+          header("Refresh:2; url=/PID_Assignment/index.php");
+          exit();
+          break;
+        case 4:
+          echo "註冊成功，2秒後自動跳轉到登入頁面";
+          header("Refresh:2; url=/PID_Assignment/member/login.php");
+          exit();
+          break;
+        case 5:
+          echo "購買成功，2秒後自動跳轉到首頁";
+          header("Refresh:2; url=/PID_Assignment/index.php");
+          exit();
           break;
       }
     ?>
@@ -38,7 +52,7 @@ session_start();
 </body>
 <?php
 // header("Refresh:2; url={$_SESSION["pageTarget"]}");
-header("Refresh:2; url=https://www.google.com/webhp?hl=zh-TW&sa=X&ved=0ahUKEwig4PLn5rrrAhUqyosBHRGcAw0QPAgI");
-exit();
+// header("Refresh:2; url=/PID_Assignment/index.php");
+// exit();
 ?>
 </html>

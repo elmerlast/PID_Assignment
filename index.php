@@ -26,6 +26,15 @@ if (isset($_POST["btnAddToCart"])) {
     }
 }
 
+if(isset($_GET["signout"])){
+  $_SESSION["uId"] = null;
+  $_SESSION["msgStatus"] = 3;//己登出，進入訊息頁面會顯示登出提示。
+  header("Location:/PID_Assignment/status.php");
+  exit();
+  
+
+}
+
 
 
 //抓取MySQL資料庫中的商品分類資料。
@@ -62,15 +71,26 @@ $catResult = mysqli_query($link, $sqlStatement);
 
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
     <!-- Brand/logo -->
-    <a class="navbar-brand" href="#">CC音饗</a>
+    <a class="navbar-brand" href="/PID_Assignment/index.php">CC音饗</a>
 
     <!-- Links -->
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="/PID_Assignment/index.php"><span class="fa fa-home"></span>首頁</a>
+    <?php if(isset($_SESSION["uId"])){?>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <?php echo "{$_SESSION["uId"]}";?>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="/PID_Assignment/member/order_list.php">我的訂單</a>
+          <a class="dropdown-item" href="/PID_Assignment/member/editor.php">編輯個人資料</a>
+        </div>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/PID_Assignment/member/login.php"><span class="fa fa-user"></span> 登入</a>
+      <?php } ?>
+        <?php if(isset($_SESSION["uId"])){?>
+          <a class="nav-link" href="/PID_Assignment/index.php?signout=1"><span class="fa fa-sign-out"></span> 登出</a>
+        <?php }else{ ?>
+          <a class="nav-link" href="/PID_Assignment/member/login.php"><span class="fa fa-user"></span> 登入</a>
+        <?php } ?>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/PID_Assignment/cart.php">

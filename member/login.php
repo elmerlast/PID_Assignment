@@ -10,7 +10,7 @@ if (isset($_POST["btnLogin"])) {
 		$result = mysqli_query($link, $sql);
 		$rows = mysqli_fetch_array($result);
 		if ($rows) {
-			$_SESSION["uid"] = $rows["user_name"];
+			$_SESSION["uId"] = $rows["m_username"];
 			$_SESSION["login"] = $rows["m_level"]; //將使用者的帳號等級記錄到session當中。
 			$_SESSION["msgStatus"] = 1;//己登入，進入訊息頁面會顯示登入提示。
 			header("Location:/PID_Assignment/status.php");
@@ -57,6 +57,8 @@ if (isset($_POST["btnLogin"])) {
 
 <body>
 
+
+
 	<div class="container">
 
 
@@ -76,7 +78,7 @@ if (isset($_POST["btnLogin"])) {
 							<div class="form-group row">
 								<label for="" class="col-4 col-form-label">帳號</label>
 								<div class="col-8">
-									<input id="inputUid" name="inputUid" type="text" class="form-control" required="required">
+									<input id="inputUid" name="inputUid" type="text" class="form-control" value="<?php if(isset($_POST["inputUid"])) { echo "{$_POST["inputUid"]}"; } ?>" required="required">
 								</div>
 							</div>
 							<div class="form-group row">
@@ -99,6 +101,8 @@ if (isset($_POST["btnLogin"])) {
 					</article> <!-- card-body end .// -->
 					<div class="border-top card-body text-center">還沒有註冊嗎 ? <a
 							href="/PID_Assignment/member/register.php">點此註冊</a></div>
+							<a class="nav-link" href="/PID_Assignment/index.php">點此返回CC音饗<span class="fa fa-arrow-left"></span></a>
+
 				</div> <!-- card.// -->
 			</div> <!-- col.//-->
 

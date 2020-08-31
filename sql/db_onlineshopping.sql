@@ -9,7 +9,7 @@ use db_onlineshopping;
 --
 
 CREATE TABLE `tbl_users` (
-    `m_id` int(11) NOT NULL AUTO_INCREMENT,
+    `m_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `m_name` varchar(20) NOT NULL,
     `m_username`varchar(25) NOT NULL,
     `m_password` varchar(120) NOT NULL,
@@ -94,19 +94,27 @@ VALUES
 
 
 CREATE TABLE `tbl_orders` (
-  `ord_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ord_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, 
   `m_id` int(11) UNSIGNED NOT NULL,
   `ord_total` int(11) UNSIGNED DEFAULT NULL,
   `ord_deliverfee` int(11) UNSIGNED DEFAULT NULL,
   `ord_grandtotal` int(11) UNSIGNED DEFAULT NULL,
-  `customername` varchar(100) DEFAULT NULL,
-  `customeremail` varchar(100) DEFAULT NULL,
-  `customeraddress` varchar(100) DEFAULT NULL,
-  `customerphone`  varchar(100) DEFAULT NULL,
-  `paytype` enum('線上刷卡','ATM轉帳','貨到付款'),
+  `ord_customername` varchar(100) DEFAULT NULL,
+  `ord_customeremail` varchar(100) DEFAULT NULL,
+  `ord_customeraddress` varchar(100) DEFAULT NULL,
+  `ord_customerphone`  varchar(100) DEFAULT NULL,
+  `ord_paytype` enum('線上付款','ATM轉帳','貨到付款'),
+  `ord_purchasetime` varchar(100) NOT NULL,
+  `ord_status`       varchar(100) NOT NULL,
   PRIMARY KEY (`ord_id`),
   constraint `fk_orders_users_m_id` foreign key (m_id) references tbl_users (m_id) ON UPDATE CASCADE
 )ENGINE=InnoDB;
+
+INSERT INTO `tbl_orders` (`m_id`,`ord_total`,`ord_customername`,`ord_customeremail`,`ord_customeraddress`,`ord_customerphone`,`ord_paytype`,`ord_purchasetime`, `ord_status`)
+VALUES
+(12,12000,'鈴栖','chieri@gmail.com','日本','0823889299','線上刷卡','2018-02-12 18:50:08','處理中');
+
+
 
 
 CREATE TABLE `tbl_orderdetail` (
@@ -120,6 +128,11 @@ CREATE TABLE `tbl_orderdetail` (
   constraint `fk_orderdetail_orders_ord_id` foreign key (ord_id) references tbl_orders (ord_id) ON UPDATE CASCADE ON DELETE CASCADE,
   constraint `fk_orderdetail_product_prd_id` foreign key (prd_id) references tbl_product (prd_id) ON UPDATE CASCADE
 )ENGINE=InnoDB;
+
+
+INSERT INTO `tbl_orderdetail` (`ord_id`,`prd_id`,`dets_name`,`dets_unitprice`,`dets_quantity`)
+VALUES
+(1,1,'【Beyerdynamic】拜亞動力 T1 2nd generation 旗艦級半開放式耳罩耳機',40000,2);
 
 
 

@@ -1,6 +1,6 @@
 
 <?php
-
+session_start();
 /*
  *使用者按下「註冊」按鈕
  */
@@ -40,7 +40,10 @@ if (isset($_POST["btnRegister"])) {
 		 '{$addBirthday}');
 		sqlSTMT;
 		mysqli_query($link, $sqlSTMT) or die(mysqli_error($link));     
-		echo "新增成功";
+		$_SESSION["msgStatus"] = 4;//註冊成功，進入訊息頁面會顯示註冊成功提示。
+		header("Location:/PID_Assignment/status.php");
+		exit();
+	  
  
 	}
 }
@@ -91,13 +94,13 @@ if (isset($_POST["btnRegister"])) {
 								<div class="form-row">
 									<div class="col form-group">
 										<label>姓名 </label>
-										<input type="text" id="inputName" name="inputName" class="form-control" placeholder="">
+										<input type="text" id="inputName" name="inputName" class="form-control" placeholder="" value="<?php if(isset($_POST["inputName"])) { echo "{$_POST["inputName"]}"; } ?>">
 									</div> <!-- form-group end.// -->
 									<div class="form-row">
 									<div class="col form-group">
 										<label>帳號名稱</label>
 										<?php if(isset($_POST["userError"])) { echo '&nbsp;<label style="color: red;">輸入的使用者名稱己被使用！</label>'; } ?>
-										<input type="text" id="inputUserName" name="inputUserName" class="form-control" placeholder=" ">
+										<input type="text" id="inputUserName" name="inputUserName" class="form-control" placeholder="" value="<?php if(isset($_POST["inputUserName"])) { echo "{$_POST["inputUserName"]}"; } ?>">
      								</div>
 									</div> <!-- form-group end.// -->
 								</div> <!-- form-row end.// -->
@@ -108,7 +111,7 @@ if (isset($_POST["btnRegister"])) {
 									</div> <!-- form-group end.// -->
 									<div class="col form-group">
 									<label>電子郵件</label>
-									<input type="email" id="inputEmail" name="inputEmail" class="form-control" placeholder="">
+									<input type="email" id="inputEmail" name="inputEmail" class="form-control" placeholder="" value="<?php if(isset($_POST["inputEmail"])) { echo "{$_POST["inputEmail"]}"; } ?>">
 									</div> <!-- form-group end.// -->
 								</div> <!-- form-row end.// -->
 
@@ -127,11 +130,11 @@ if (isset($_POST["btnRegister"])) {
 								<div class="form-row">
 								<div class="col form-group">
 								        <label>電話</label>
-										<input type="tel" class="form-control" id="inputPhoneNumber" name="inputPhoneNumber" required pattern="[0-9]{9,10}">
+										<input type="tel" class="form-control" id="inputPhoneNumber" name="inputPhoneNumber" value="<?php if(isset($_POST["inputPhoneNumber"])) { echo "{$_POST["inputPhoneNumber"]}"; } ?>" required pattern="[0-9]{9,10}">
 									</div> <!-- form-group end.// -->
 									<div class="col form-group">
 									<label>生日</label>
-									<input class="form-control" type="date" id="inputBirthday" name="inputBirthday" >
+									<input class="form-control" type="date" id="inputBirthday" name="inputBirthday" value="<?php if(isset($_POST["inputBirthday"])) { echo "{$_POST["inputBirthday"]}"; } ?>">
 									</div> <!-- form-group end.// -->
 								</div> <!-- form-row end.// -->
 
@@ -142,6 +145,7 @@ if (isset($_POST["btnRegister"])) {
 							</form>
 						</article> <!-- card-body end .// -->
 						<div class="border-top card-body text-center">己經有帳號了嗎 ? <a href="/PID_Assignment/member/login.php">現在就登入！</a></div>
+						<a class="nav-link" href="/PID_Assignment/index.php">點此返回CC音饗<span class="fa fa-arrow-left"></span></a>
 					</div> <!-- card.// -->
 				</div> <!-- col.//-->
 

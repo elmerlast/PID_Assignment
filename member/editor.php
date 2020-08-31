@@ -1,9 +1,8 @@
 <?php
 session_start();
-$_SESSION["Uid"] = "ios820z";//test
 
 require_once "../sql/onnDB.php";
-$sql = "select * from tbl_users where m_username = '{$_SESSION["Uid"]}' ;";
+$sql = "select * from tbl_users where m_username = '{$_SESSION["uId"]}' ;";
 $result = mysqli_query($link, $sql);
 $rows = mysqli_fetch_assoc($result);  
 
@@ -30,9 +29,12 @@ if (isset($_POST["btnConfirm"])) {
 		m_gender = '{$modGender}',
 		m_phone = '{$modPhoneNumber}',
 		m_birthday = '{$modBirthday}'
-	WHERE m_username = '{$_SESSION["Uid"]}'; 
+	WHERE m_username = '{$_SESSION["uId"]}'; 
 	sqlSTMT;//更新使用者所輸入的資料到資料庫
 	mysqli_query($link, $sqlSTMT) or die(mysqli_error($link));
+	header("location: /PID_Assignment/index.php");
+	exit();
+
 
 
 
@@ -124,7 +126,7 @@ if (isset($_POST["btnConfirm"])) {
 
 								<div class="form-group text-right">
 									<button type="submit" class="btn btn-outline-success" name="btnConfirm" id="btnConfirm" value="btnConfirm"> 確認 </button>
-									<button type="submit" class="btn btn-outline-secondary" name="btnCancel" id="btnCancel" value="btnCancel"> 取消 </button>
+									<a role="button" href="/PID_Assignment/index.php" class="btn btn-outline-secondary" name="btnCancel" id="btnCancel" value="btnCancel">取消</a>
 								</div> <!-- form-group// -->
 
 							</form>

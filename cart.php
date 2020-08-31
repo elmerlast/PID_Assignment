@@ -25,6 +25,24 @@ if(isset($_GET["id"])){
 }
 
 
+if (isset($_POST["btnCheckout"])) {
+    header("location: /PID_Assignment/checkout.php");
+    exit();
+}
+
+if (isset($_POST["btnRemoveAll"])) {
+  $cart->empty_cart();
+
+  //取得購物車裡商品數量總數。
+  $items = $cart->get_contents();
+  $_SESSION["itemCountTotal"] = 0;
+  foreach($items as $item){
+  $_SESSION["itemCountTotal"] += $item["qty"];
+  }
+}
+
+
+
 
 ?>
 
@@ -59,24 +77,40 @@ if(isset($_GET["id"])){
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
     <!-- Brand/logo -->
-    <a class="navbar-brand">CC音饗</a>
+    <a class="navbar-brand" href="/PID_Assignment/index.php">CC音饗</a>
 
     <!-- Links -->
     <ul class="navbar-nav ml-auto">
+    <?php if(isset($_SESSION["uId"])){?>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <?php echo "{$_SESSION["uId"]}";?>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="#">我的訂單</a>
+          <a class="dropdown-item" href="#">修改會員資料</a>
+        </div>
+      </li>
+      <?php } ?>
       <li class="nav-item">
         <a class="nav-link" href="/PID_Assignment/index.php"><span class="fa fa-home"></span>首頁</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/PID_Assignment/member/login.php"><span class="fa fa-user"></span> 登入</a>
+        <?php if(isset($_SESSION["uId"])){?>
+          <a class="nav-link" href="/PID_Assignment/index.php?signout=1"><span class="fa fa-sign-out"></span> 登出</a>
+        <?php }else{ ?>
+          <a class="nav-link" href="/PID_Assignment/member/login.php"><span class="fa fa-user"></span> 登入</a>
+        <?php } ?>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="/PID_Assignment/cart.php">
           <span class="fa fa-shopping-cart fa-lg" style="color:Beige"></span> <span
             class="badge badge-pill badge-danger"><?php if(isset($_SESSION["itemCountTotal"])){ echo "{$_SESSION["itemCountTotal"]}";}else{echo "0";} ?></span>
         </a>
       </li>
     </ul>
   </nav>
+
 
 <main>
   <div class="container">
@@ -95,7 +129,7 @@ if(isset($_GET["id"])){
     <?php if(isset($_POST["btnUpdate"])){ 
     //暫時拿掉修改的功能
 
-     }else{
+     }elseif($_SESSION["itemCountTotal"] > 0){
      $items = $cart->get_contents();
      foreach ($items as $item){?> 
       <tr>
@@ -108,20 +142,33 @@ if(isset($_GET["id"])){
         </td>
       </tr>
     <?php }//end of foreach
-     }//end of if
+     }else{ ?>
+      <tr>
+        <td>
+          <div class="container text-center">
+              <label>您的購物車目前是空的。</label>
+          </div>
+        </td>
+      </tr>
 
-    ?>
+
+
+
+     <?php }//end of if?>
+
       
     </tbody>
   </table>
   <div class="row"><div class="col-10"></div><div class="col-2"><h6>&nbsp;總計&nbsp;&nbsp;&nbsp;&nbsp;$<?=$cart->total?></h6></div></div>
   <div class="row">
-  <div class="col-10"></div>
-    <div class="col-2">
-      <!-- <button name="btnUpdate" id="btnUpdate" type="submit" class="btn btn-outline-success"
-                  value="btnUpdate">更新</button> -->
+  <div class="col-9"></div>
+    <div class="col-2 ">
+      <button name="btnRemoveAll" id="btnRemoveAll" type="submit" class="btn btn-outline-success float-right"
+                  value="btnRemoveAll">清空購物車</button>
+    </div>
+    <div class="col-1 ">
       <button name="btnCheckout" id="btnCheckout" type="submit" class="btn btn-success float-right"
-                  value="btnCheckout">結帳</button>
+                  value="btnCheckout" <?php if($_SESSION["itemCountTotal"] == 0) {echo "disabled";}?> >結帳</button>
     </div>
     
   </div>
