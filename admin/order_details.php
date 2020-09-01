@@ -2,34 +2,22 @@
 session_start();
 require_once("../sql/onnDB.php");
 
-
-
-
 if(!isset($_GET["id"])){
     die("id not found.");
-}
+  }
   
-$id = $_GET["id"];
-if(!is_numeric($id)){
+  $id = $_GET["id"];
+  if(!is_numeric($id)){
     die("id not a number.");
-}
+  }
+  
+  $sql=<<<sqls
+  select dets_name, dets_unitprice, dets_quantity
+  from tbl_orderdetail where ord_id = $id
+  sqls;
+  $result =mysqli_query($link, $sql);
 
-//透過session中的使用者名稱取得會員編號
-$sql = "select m_id from tbl_users where m_username = '{$_SESSION["uId"]}'; ";
-$result = mysqli_query($link, $sql);
-$row = mysqli_fetch_array($result);
-$mId = $row["m_id"];
-
-$sql=<<<sqls
-SELECT dets_name, dets_unitprice, dets_quantity, m_id
-FROM tbl_orders
-LEFT JOIN tbl_orderdetail
-ON tbl_orders.ord_id = tbl_orderdetail.ord_id 
-where tbl_orders.ord_id = {$id} ;
-sqls;
-$result =mysqli_query($link, $sql);
-
-$orderTotal = 0;
+  $orderTotal = 0;
 
 ?>
 
@@ -103,8 +91,7 @@ $orderTotal = 0;
     </tr>
   </thead>
   <tbody>
-   <?php while ($row = mysqli_fetch_assoc($result)){
-             if($row["m_id"] != $mId) {die('<h2 style="color:red;">錯誤！權限不足。</h2>');}?>
+   <?php while ($row = mysqli_fetch_assoc($result)){?>
       <tr>
         <th scope="row"><?=$row["dets_name"] ?></th>
            <td><?=$row["dets_unitprice"]?></td>
@@ -119,7 +106,7 @@ $orderTotal = 0;
 <div class="row">
     <div class="col-10"></div>
     <div class="col-2">
-      <a href="/PID_Assignment/member/order_list.php" class="btn btn-info">返回我的訂單</a>
+      <a href="/PID_Assignment/admin/orders_admin.php" class="btn btn-info">返回訂單管理</a>
     </div>
 </div>
 

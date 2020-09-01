@@ -19,28 +19,35 @@ session_start();
     <?php
       switch ($_SESSION["msgStatus"]) {
         case 1:
+          if(isset($_SESSION["checkout"])){
+            $_SESSION["checkout"] = null;
+            echo "登入成功!2秒後自動跳轉到結帳頁面";
+            header("Refresh:2; url=/PID_Assignment/checkout.php");
+            exit();
+          }
           echo "登入成功!2秒後自動跳轉到首頁";
           header("Refresh:2; url=/PID_Assignment/index.php");
           exit();
-          break;
         case 2:
-          echo "變數是 2";
-          break;
+          echo "管理員您好，2後自動跳轉到商品管理首頁";
+          header("Refresh:2; url=/PID_Assignment/member/login.php");
+          exit();
         case 3:
           echo "您已登出，2秒後自動跳轉到首頁";
           header("Refresh:2; url=/PID_Assignment/index.php");
           exit();
-          break;
         case 4:
           echo "註冊成功，2秒後自動跳轉到登入頁面";
           header("Refresh:2; url=/PID_Assignment/member/login.php");
           exit();
-          break;
         case 5:
           echo "購買成功，2秒後自動跳轉到首頁";
           header("Refresh:2; url=/PID_Assignment/index.php");
           exit();
-          break;
+        case 6:
+          echo '<h5 style="color:red;">該會員已被停權。2秒後自動跳轉到首頁</h5>';
+          header("Refresh:2; url=/PID_Assignment/index.php");
+          exit();
       }
     ?>
    </td>

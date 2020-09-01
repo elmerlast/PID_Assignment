@@ -12,9 +12,26 @@ if (isset($_POST["btnLogin"])) {
 		if ($rows) {
 			$_SESSION["uId"] = $rows["m_username"];
 			$_SESSION["login"] = $rows["m_level"]; //將使用者的帳號等級記錄到session當中。
-			$_SESSION["msgStatus"] = 1;//己登入，進入訊息頁面會顯示登入提示。
-			header("Location:/PID_Assignment/status.php");
-			exit();
+			switch ($_SESSION["login"]) {
+				case "admin":
+					$_SESSION["msgStatus"] = 2;//己登入，進入訊息頁面會顯示管理員登入提示。
+					header("Location:/PID_Assignment/status.php");
+					exit();
+				case "member":
+					$_SESSION["msgStatus"] = 1;//己登入，進入訊息頁面會顯示登入提示。
+					header("Location:/PID_Assignment/status.php");
+					exit();
+				case "readonly":
+					$_SESSION["msgStatus"] = 1;//己登入，進入訊息頁面會顯示登入提示。
+					header("Location:/PID_Assignment/status.php");
+					exit();
+				case "suspension":
+					$_SESSION["msgStatus"] = 6;//停權會員，進入訊息頁面會顯示停權提示。
+					header("Location:/PID_Assignment/status.php");
+					$_SESSION["uId"] = null;
+					exit();
+			}
+		
 		} else {
 			$_POST["loginError"] = "error";
 		}

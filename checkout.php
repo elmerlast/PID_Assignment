@@ -7,6 +7,12 @@ if (!is_object($cart)) {
 }
 
 
+if (!isset($_SESSION["uId"])) {
+  $_SESSION["checkout"] = "true";
+  header("location: /PID_Assignment/member/login.php");
+	exit();
+}
+
 
 
 
@@ -19,9 +25,6 @@ if (isset($_POST["btnPlaceOrder"])) {
   $_SESSION["orderPaymentMethod"] = $_POST["radioPaymentMethod"];
   header("location: /PID_Assignment/confirmorder.php");
 	exit();
-
-  
-
 
 }
 

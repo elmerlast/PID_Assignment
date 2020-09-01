@@ -105,7 +105,7 @@ CREATE TABLE `tbl_orders` (
   `ord_customerphone`  varchar(100) DEFAULT NULL,
   `ord_paytype` enum('線上付款','ATM轉帳','貨到付款'),
   `ord_purchasetime` varchar(100) NOT NULL,
-  `ord_status`       varchar(100) NOT NULL,
+  `ord_status`  enum('處理中','已確認','已完成'),
   PRIMARY KEY (`ord_id`),
   constraint `fk_orders_users_m_id` foreign key (m_id) references tbl_users (m_id) ON UPDATE CASCADE
 )ENGINE=InnoDB;
@@ -154,6 +154,7 @@ VALUES
         </td>
       </tr>
     <?php }//end of foreach
+
 
 
 

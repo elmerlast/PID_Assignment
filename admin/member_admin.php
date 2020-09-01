@@ -78,7 +78,7 @@ table-layout: fixed;
         <td class="td_overflow" title="<?= $row["m_jointime"] ?>"><?= $row["m_jointime"] ?></td>
         <td><?= $row["m_level"] ?></td>
         <td>
-        <a href ="./member_update.php?id=<?= $row["m_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
+        <a href ="./member_update.php?id=<?= $row["m_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o"></i></a>
         <a href ="./member_delete.php?id=<?= $row["m_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
         </td>
       </tr>
