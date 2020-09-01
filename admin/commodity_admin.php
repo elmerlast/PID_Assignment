@@ -133,7 +133,7 @@ $catResult = mysqli_query($link, $sqlStatement);
       <th scope="col">名稱</th>
       <th scope="col">單價</th>
       <th>
-        <a href ="./member_adding.php" class="btn btn btn-outline-success btn-sm"><i class="fa fa-plus "></i></a>
+        <a href ="./commodity_adding.php" class="btn btn btn-outline-success btn-sm"><i class="fa fa-plus "></i></a>
       </th>
     </tr>
     </thead>

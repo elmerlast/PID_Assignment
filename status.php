@@ -30,7 +30,7 @@ session_start();
           exit();
         case 2:
           echo "管理員您好，2後自動跳轉到商品管理首頁";
-          header("Refresh:2; url=/PID_Assignment/member/login.php");
+          header("Refresh:2; url=/PID_Assignment/admin/commodity_admin.php");
           exit();
         case 3:
           echo "您已登出，2秒後自動跳轉到首頁";
@@ -48,7 +48,12 @@ session_start();
           echo '<h5 style="color:red;">該會員已被停權。2秒後自動跳轉到首頁</h5>';
           header("Refresh:2; url=/PID_Assignment/index.php");
           exit();
+        case 7:
+          echo '商品新增成功，2秒後自動跳轉到商品管理首頁';
+          header("Refresh:2; url=/PID_Assignment/admin/commodity_admin.php");
+          exit();
       }
+
     ?>
    </td>
   </tr>

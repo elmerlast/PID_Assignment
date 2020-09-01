@@ -30,7 +30,7 @@ $catResult = mysqli_query($link, $sqlStatement);
  *使用者按下「取消」按鈕
  */
 if(isset($_POST["btnCancel"])){
-	header("location: member_admin.php");
+	header("location: commodity_admin.php");
 	exit();
   }
 
@@ -48,24 +48,28 @@ if (isset($_POST["btnConfirm"])) {
 	$addPicturePath = "/PID_Assignment/img/".$_FILES["inputImage"]["name"];
 
 	//根據所選取的分類名稱從MySQL資料庫抓取分類的編號。
-	$sqlStatement = <<<categorysql
+	$sqlStatement = <<<sql
 	select ca_id
-	from tbl_category;
-	where ca_name = {$addingProductCategory};
-	categorysql;
+	from tbl_category
+	where ca_name = '{$addingProductCategory}';
+	sql;
 	$result = mysqli_query($link, $sqlStatement);
 	$row = mysqli_fetch_assoc($result);
 	$caId = $row["ca_id"];
 
 
 
-	//存檔
-	$sqlStatement =<<<categorysql
+	//新增商品至資料庫
+	$sqlStatement =<<<sql
 	INSERT INTO `tbl_product` (`ca_id`,`prd_name`,`prd_price`,`prd_images`)
 	VALUES
 	({$caId},'{$addingProductName}',{$addingProductPrice},'{$addPicturePath}');
-	categorysql;
+	sql;
 	mysqli_query($link, $sqlStatement) or die("新增失敗");
+
+	$_SESSION["msgStatus"] = 7;//新增商品成功，進入訊息頁面會顯示成功提示。
+	header("Location:/PID_Assignment/status.php");
+	exit();
 
 	
 	
@@ -116,7 +120,7 @@ if (isset($_POST["btnConfirm"])) {
 								<div class="form-row">
 									<div class="col-6 form-group">
 										<label>商品名稱</label>
-										<input type="text" id="inputName" name="inputName" class="form-control" placeholder="">
+										<input type="text" id="inputName" name="inputName" class="form-control" placeholder="" required>
 									</div> <!-- form-group end.// -->
 									<div class="col-6 form-group">
 									    <div class="c-zt-pic">
@@ -129,16 +133,15 @@ if (isset($_POST["btnConfirm"])) {
 								<div class="form-row">
 								<div class="col-6 form-group">
 										<label for=" inputPrice" class="col-form-label">商品單價</label>
-										<input type="number" class="form-control" id="inputPrice" name="inputPrice" min="1" placeholder="">
+										<input type="number" class="form-control" id="inputPrice" name="inputPrice" min="1" placeholder="" required>
 									</div> <!-- form-group end.// -->
 								<div class="col-6 form-group">
 
 									<label for="inputCategory" class="col-form-label">商品分類</label>
-								    <select id="inputCategory" name="inputCategory" class="col form-control">
+								    <select id="inputCategory" name="inputCategory" class="col form-control" required>
 									<?php $row = mysqli_fetch_assoc($catResult);//忽略「全部產品」這個分類
 									 while ($row = mysqli_fetch_assoc($catResult)) { //將抓取出來的分類名稱資料轉換成下拉式選單標籤?>
-                                    <option value="<?=$row["ca_name"]?>"
-                                    <?php if ($row["ca_name"] == $_POST["inputCategory"]) {echo "selected";}?>> <?=$row["ca_name"]?>
+                                    <option value="<?=$row["ca_name"]?>"> <?=$row["ca_name"]?>
                                     </option>
                                     <?php }?>
                                     </select>
