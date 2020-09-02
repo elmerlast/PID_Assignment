@@ -72,7 +72,7 @@ if (isset($_POST["btnSearch"]) && $_POST["inputMemberUserName"]!="") {
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
     <!-- Brand/logo -->
-    <a class="navbar-brand" href="/PID_Assignment/index.php">CC音饗</a>
+    <a class="navbar-brand" href="/PID_Assignment/index.php">CC音饗管理系統</a>
 
     <!-- Links -->
     <ul class="navbar-nav ml-auto">
@@ -82,8 +82,10 @@ if (isset($_POST["btnSearch"]) && $_POST["inputMemberUserName"]!="") {
           <?php echo "{$_SESSION["uId"]}";?>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">我的訂單</a>
-          <a class="dropdown-item" href="/PID_Assignment/member/editor.php">編輯個人資料</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/orders_admin.php">訂單管理</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/member_admin.php">會員管理</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/commodity_admin.php">商品管理</a>
+
         </div>
       </li>
       <?php } ?>
@@ -92,12 +94,6 @@ if (isset($_POST["btnSearch"]) && $_POST["inputMemberUserName"]!="") {
         <?php }else{ ?>
           <a class="nav-link" href="/PID_Assignment/member/login.php"><span class="fa fa-user"></span> 登入</a>
         <?php } ?>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/PID_Assignment/cart.php">
-          <span class="fa fa-shopping-cart fa-lg" style="color:Beige"></span> <span
-            class="badge badge-pill badge-danger"><?php if(isset($_SESSION["itemCountTotal"])){ echo "{$_SESSION["itemCountTotal"]}";}else{echo "0";} ?></span>
-        </a>
       </li>
     </ul>
   </nav>

@@ -71,9 +71,9 @@ $catResult = mysqli_query($link, $sqlStatement);
           <?php echo "{$_SESSION["uId"]}";?>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="/PID_Assignment/member/order_list.php">訂單管理</a>
-          <a class="dropdown-item" href="/PID_Assignment/member/editor.php">會員管理</a>
-          <a class="dropdown-item" href="/PID_Assignment/member/editor.php">商品管理</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/orders_admin.php">訂單管理</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/member_admin.php">會員管理</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/commodity_admin.php">商品管理</a>
 
         </div>
       </li>
@@ -157,8 +157,8 @@ $catResult = mysqli_query($link, $sqlStatement);
              <td><?=$row["prd_name"]?></td>
              <td><?=$row["prd_price"]?></td>
              <td>
-               <a href ="./order_details.php?id=<?= $row["ord_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
-               <a href ="./delete_order.php?id=<?= $row["ord_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
+               <a href ="./commodity_update.php?id=<?= $row["prd_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
+               <a href ="./commodity_delete.php?id=<?= $row["prd_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
              </td>
         </tr>  
     <?php }//end of while?>
@@ -186,8 +186,8 @@ $catResult = mysqli_query($link, $sqlStatement);
              <td><?=$row["prd_name"]?></td>
              <td><?=$row["prd_price"]?></td>
              <td>
-               <a href ="./order_details.php?id=<?= $row["ord_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
-               <a href ="./delete_order.php?id=<?= $row["ord_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
+               <a href ="./commodity_update.php?id=<?= $row["prd_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
+               <a href ="./commodity_delete.php?id=<?= $row["prd_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
              </td>
         </tr>  
     <?php }//end of while?>
@@ -216,8 +216,8 @@ $catResult = mysqli_query($link, $sqlStatement);
                  <td><?=$row["prd_name"]?></td>
                  <td><?=$row["prd_price"]?></td>
                  <td>
-                   <a href ="./order_details.php?id=<?= $row["ord_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
-                   <a href ="./delete_order.php?id=<?= $row["ord_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
+                   <a href ="./commodity_update.php?id=<?= $row["prd_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
+                   <a href ="./commodity_delete.php?id=<?= $row["prd_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
                  </td>
             </tr>  
             <?php }//end of while?>

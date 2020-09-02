@@ -47,15 +47,35 @@ if (isset($_POST["btnConfirm"])) {
 	$addingProductCategory = $_POST["inputCategory"];
 	$addPicturePath = "/PID_Assignment/img/".$_FILES["inputImage"]["name"];
 
-	//根據所選取的分類名稱從MySQL資料庫抓取分類的編號。
+
+
+	//根據所輸入的分類名稱從MySQL資料庫抓取分類的編號。如果資料庫回傳結果數量為0的話建立一個新商品類別再抓取編號。
 	$sqlStatement = <<<sql
 	select ca_id
 	from tbl_category
 	where ca_name = '{$addingProductCategory}';
 	sql;
 	$result = mysqli_query($link, $sqlStatement);
+
+	if(mysqli_num_rows($result) == 0){
+		$sqlStatement = <<<sql
+		INSERT INTO `tbl_category` (`ca_name`)
+		VALUES
+		('{$addingProductCategory}')
+		sql;
+		mysqli_query($link, $sqlStatement) or die("新增分類失敗");
+
+		$sqlStatement = <<<sql
+		select ca_id
+		from tbl_category
+		where ca_name = '{$addingProductCategory}';
+		sql;
+		$result = mysqli_query($link, $sqlStatement);
+	}
 	$row = mysqli_fetch_assoc($result);
 	$caId = $row["ca_id"];
+
+
 
 
 
@@ -131,22 +151,24 @@ if (isset($_POST["btnConfirm"])) {
 
 								</div> <!-- form-row end.// -->
 								<div class="form-row">
-								<div class="col-6 form-group">
+								  <div class="col-6 form-group">
 										<label for=" inputPrice" class="col-form-label">商品單價</label>
 										<input type="number" class="form-control" id="inputPrice" name="inputPrice" min="1" placeholder="" required>
-									</div> <!-- form-group end.// -->
-								<div class="col-6 form-group">
-
+								  </div> <!-- form-group end.// -->
+								  <div class="col-6 form-group">
 									<label for="inputCategory" class="col-form-label">商品分類</label>
-								    <select id="inputCategory" name="inputCategory" class="col form-control" required>
-									<?php $row = mysqli_fetch_assoc($catResult);//忽略「全部產品」這個分類
-									 while ($row = mysqli_fetch_assoc($catResult)) { //將抓取出來的分類名稱資料轉換成下拉式選單標籤?>
-                                    <option value="<?=$row["ca_name"]?>"> <?=$row["ca_name"]?>
-                                    </option>
-                                    <?php }?>
-                                    </select>
-
-								</div> <!-- form-group end.// -->
+									<input type="text" class="form-control" id="inputCategory" name="inputCategory" placeholder="" required>
+									<div class="col-8 float-right">
+								      <select id="selectCategory" name="selectCategory" class="col form-control" required>
+									    <?php $row = mysqli_fetch_assoc($catResult);//忽略「全部產品」這個分類
+									    while ($row = mysqli_fetch_assoc($catResult)) { //將抓取出來的分類名稱資料轉換成下拉式選單標籤?>
+                                        <option value="<?=$row["ca_name"]?>"> 
+										  <?=$row["ca_name"]?>
+                                        </option>
+                                        <?php }?>
+                                      </select>
+								    </div>
+								  </div> <!-- form-group end.// -->
 								</div> <!-- form-row end.// -->
 
 								
@@ -199,6 +221,15 @@ $(function() {
 		   document.getElementById('preview').src = src;
 	   });
 });
+
+
+$('select').on('change', function() {
+  let a = this.value ;
+  $('input[name=inputCategory]').val(a);
+
+});
+
+
 </script>
 
 </html>

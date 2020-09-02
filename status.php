@@ -29,7 +29,7 @@ session_start();
           header("Refresh:2; url=/PID_Assignment/index.php");
           exit();
         case 2:
-          echo "管理員您好，2後自動跳轉到商品管理首頁";
+          echo "管理員您好，2秒後自動跳轉到商品管理首頁";
           header("Refresh:2; url=/PID_Assignment/admin/commodity_admin.php");
           exit();
         case 3:
@@ -50,6 +50,10 @@ session_start();
           exit();
         case 7:
           echo '商品新增成功，2秒後自動跳轉到商品管理首頁';
+          header("Refresh:2; url=/PID_Assignment/admin/commodity_admin.php");
+          exit();
+        case 8:
+          echo '商品修改成功，2秒後自動跳轉到商品管理首頁';
           header("Refresh:2; url=/PID_Assignment/admin/commodity_admin.php");
           exit();
       }

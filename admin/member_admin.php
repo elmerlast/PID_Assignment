@@ -1,4 +1,5 @@
 <?php 
+session_start();
 require_once("../sql/onnDB.php");
 $sqlStatement =<<<mulity
  select * from tbl_users;
@@ -17,38 +18,50 @@ $result =mysqli_query($link, $sqlStatement);
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="\PID_Assignment\css\store_index.css">
+  <link rel="stylesheet" href="/PID_Assignment/css/store_index.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<style>
-.tables{
-width: 125%;
-height: 100%;
-table-layout: fixed;
-}
 
-.td_overflow
-{
- max-width: 140px;
- overflow: hidden;
- text-overflow: ellipsis;
- white-space: nowrap;
-}
-</style>
 
 
 </head>
 <body>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+    <!-- Brand/logo -->
+    <a class="navbar-brand" href="/PID_Assignment/index.php">CC音饗管理系統</a>
 
+    <!-- Links -->
+    <ul class="navbar-nav ml-auto">
+    <?php if(isset($_SESSION["uId"])){?>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <?php echo "{$_SESSION["uId"]}";?>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="/PID_Assignment/admin/orders_admin.php">訂單管理</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/member_admin.php">會員管理</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/commodity_admin.php">商品管理</a>
+
+        </div>
+      </li>
+      <?php } ?>
+        <?php if(isset($_SESSION["uId"])){?>
+          <a class="nav-link" href="/PID_Assignment/index.php?signout=1"><span class="fa fa-sign-out"></span> 登出</a>
+        <?php }else{ ?>
+          <a class="nav-link" href="/PID_Assignment/member/login.php"><span class="fa fa-user"></span> 登入</a>
+        <?php } ?>
+      </li>
+    </ul>
+  </nav>
 
   
 <div class="container">
   <h2>會員列表</h2>
-  <table class="table table-hover tables" >
+  <table class="table table-hover" >
     <thead class="thead-light">
       <tr>
-        <th>會員編號</th>
+        <th>編號</th>
         <th>姓名</th>
         <th>使用者名稱</th>
         <th>密碼</th>
