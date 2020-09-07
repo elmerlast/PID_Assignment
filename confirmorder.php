@@ -162,9 +162,9 @@ if (isset($_POST["btnCheckOrder"])) {
      foreach ($items as $item){?> 
       <tr>
         <td><?= $item["info"] ?></td>
-        <td><?= $item["price"] ?></td>
-        <td><?= $item["qty"] ?></td>
-        <td><?= $item["subtotal"] ?></td>
+        <td><?= "$".number_format($item["price"]) ?></td>
+        <td valign="middle"><?= $item["qty"] ?></td>
+        <td><?= "$".number_format($item["subtotal"]) ?></td>
       </tr>
     <?php }//end of foreach?>
       

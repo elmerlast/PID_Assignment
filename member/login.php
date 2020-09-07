@@ -15,20 +15,23 @@ if (isset($_POST["btnLogin"])) {
 			switch ($_SESSION["login"]) {
 				case "admin":
 					$_SESSION["msgStatus"] = 2;//己登入，進入訊息頁面會顯示管理員登入提示。
+					$_SESSION["level"] = 999;
 					header("Location:/PID_Assignment/status.php");
 					exit();
 				case "member":
 					$_SESSION["msgStatus"] = 1;//己登入，進入訊息頁面會顯示登入提示。
+					$_SESSION["level"] = 3;
 					header("Location:/PID_Assignment/status.php");
 					exit();
 				case "readonly":
 					$_SESSION["msgStatus"] = 1;//己登入，進入訊息頁面會顯示登入提示。
+					$_SESSION["level"] = 2;
 					header("Location:/PID_Assignment/status.php");
 					exit();
 				case "suspension":
 					$_SESSION["msgStatus"] = 6;//停權會員，進入訊息頁面會顯示停權提示。
 					header("Location:/PID_Assignment/status.php");
-					$_SESSION["uId"] = null;
+					unset($_SESSION["uId"]);
 					exit();
 			}
 		

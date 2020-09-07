@@ -1,6 +1,13 @@
-
 <?php
+session_start();
 
+if ($_SESSION["level"]!=999) {
+	$_SESSION["msgStatus"] = 11;//權限非管理員，進入訊息頁面會顯示權限不足提示。
+	header("Location:/PID_Assignment/status.php");
+	exit();
+  }
+
+require_once("../sql/onnDB.php");
 
 /*
  *使用者按下「取消」按鈕
@@ -52,12 +59,13 @@ if (isset($_POST["btnConfirm"])) {
 		 '{$addBirthday}');
 		sqlSTMT;
 		mysqli_query($link, $sqlSTMT) or die(mysqli_error($link));     
-		echo "新增成功";
- 
+		mysqli_close($link);
+		$_SESSION["msgStatus"] = 9;//新增會員成功，進入訊息頁面會顯示成功提示。
+		header("Location:/PID_Assignment/status.php");
+		exit();
 	}
 }
-
-
+mysqli_close($link);
 ?>
 
 

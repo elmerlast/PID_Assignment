@@ -1,7 +1,14 @@
 
 <?php
-require_once "../sql/onnDB.php";
 session_start();
+
+if ($_SESSION["level"]!=999) {
+	$_SESSION["msgStatus"] = 11;//權限非管理員，進入訊息頁面會顯示權限不足提示。
+	header("Location:/PID_Assignment/status.php");
+	exit();
+  }
+
+require_once("../sql/onnDB.php");
 
 
 if(!isset($_GET["id"])){
@@ -34,7 +41,7 @@ function processFile($objFile) {
 
 //抓取MySQL資料庫中欲修改商品的資料。
 $sqlStatement = <<<categorysql
- select p.prd_name, p.prd_price, p.prd_images, ca.ca_name
+ select p.prd_name, p.prd_price, p.prd_images, ca.ca_name, prd_description
  from tbl_category as ca
  inner join tbl_product as p
  on ca.ca_id = p.ca_id
@@ -42,7 +49,6 @@ $sqlStatement = <<<categorysql
 categorysql;
 $result = mysqli_query($link, $sqlStatement);
 $rows = mysqli_fetch_assoc($result);
-
 
 
 
@@ -72,6 +78,7 @@ if (isset($_POST["btnConfirm"])) {
 	$modProductName = $_POST["inputName"];
 	$modProductPrice = $_POST["inputPrice"];
 	$modProductCategory = $_POST["inputCategory"];
+	$modDescription = $_POST["inputDescription"];
 
 
 
@@ -110,7 +117,7 @@ if (isset($_POST["btnConfirm"])) {
 		$modPicturePath = "/PID_Assignment/img/".$_FILES["inputImage"]["name"];
 		//修改商品資訊
 		$sqlStatement =<<<sql
-		UPDATE `tbl_product` SET ca_id = {$caId}, prd_name = '{$modProductName}', prd_price = {$modProductPrice}, prd_images = '{$modPicturePath}'
+		UPDATE `tbl_product` SET ca_id = {$caId}, prd_name = '{$modProductName}', prd_price = {$modProductPrice}, prd_images = '{$modPicturePath}, prd_description = '{$modDescription}'
 		WHERE prd_id = {$id};
 		sql;
 		mysqli_query($link, $sqlStatement) or die("修改失敗");
@@ -128,7 +135,7 @@ if (isset($_POST["btnConfirm"])) {
 
 		//修改商品資訊
 		$sqlStatement =<<<sql
-		UPDATE `tbl_product` SET ca_id = {$caId}, prd_name = '{$modProductName}', prd_price = {$modProductPrice}
+		UPDATE `tbl_product` SET ca_id = {$caId}, prd_name = '{$modProductName}', prd_price = {$modProductPrice}, prd_description = '{$modDescription}'
 		WHERE prd_id = {$id};
 		sql;
 		mysqli_query($link, $sqlStatement) or die("修改失敗");
@@ -145,7 +152,7 @@ if (isset($_POST["btnConfirm"])) {
 	
 }
 
-
+mysqli_close($link);
 
 ?>
 
@@ -210,8 +217,8 @@ if (isset($_POST["btnConfirm"])) {
 									<input type="text" class="form-control" id="inputCategory" name="inputCategory" value="<?=$rows["ca_name"]?>" required>
 									<div class="col-8 float-right">
 								      <select id="selectCategory" name="selectCategory" class="col form-control" required>
-									    <?php $row = mysqli_fetch_assoc($catResult);//忽略「全部產品」這個分類
-									    while ($row = mysqli_fetch_assoc($catResult)) { //將抓取出來的分類名稱資料轉換成下拉式選單標籤?>
+										<?php $row = mysqli_fetch_assoc($catResult);       //忽略「全部產品」這個分類
+									    	  while ($row = mysqli_fetch_assoc($catResult)) { //將抓取出來的分類名稱資料轉換成下拉式選單標籤?>
                                         <option value="<?=$row["ca_name"]?>" <?php if ($row["ca_name"] == $rows["ca_name"]) {echo "selected";}?>> 
 										  <?=$row["ca_name"]?>
                                         </option>
@@ -220,31 +227,25 @@ if (isset($_POST["btnConfirm"])) {
 								    </div>
 								  </div> <!-- form-group end.// -->
 								</div> <!-- form-row end.// -->
-
-								
-								
 								<div class="form-row">
-								<div class="col form-group">
-								<!-- <form action="register.php" method="post" > -->
-								<div style="margin-bottom: 20px;">
-  									      <input type="file" name="inputImage" id="upload" class="btn btn-edc" value="新增圖片">
-  								</div>
-								<!-- </form> -->
-
-								</div> <!-- form-group end.// -->
+									<div class="col form-group">
+										<div style="margin-bottom: 20px;">
+											<label>修改圖片</label>
+  									    	<input type="file" name="inputImage" id="upload" class="btn btn-edc" value="新增圖片">
+  										</div>
+									</div> <!-- form-group end.// -->
 								</div> <!-- form-row end.// -->
-
-
-
-
-							
+								<div class="form-group">
+									<label for="disc">商品介紹</label>
+									<textarea class="form-control" style="resize: none" name="inputDescription" rows="3"><?=$rows["prd_description"]?></textarea>
+								</div>
 								<div class="form-group text-right">
-								<button type="submit" class="btn btn-outline-success" name="btnConfirm" id="btnConfirm"
+									<button type="submit" class="btn btn-outline-success" name="btnConfirm" id="btnConfirm"
 									value="btnConfirm"> 確認 </button>
-								<button type="submit" class="btn btn-outline-secondary cancel" name="btnCancel" id="btnCancel"
+									<button type="submit" class="btn btn-outline-secondary cancel" name="btnCancel" id="btnCancel"
 									value="btnCancel"  formnovalidate> 取消 </button>
-							</div> <!-- form-group// -->
-							
+								</div> <!-- form-group// -->
+
 
 							</form>
 						</article> <!-- card-body end .// -->
@@ -272,7 +273,7 @@ $(function() {
 	   });
 });
 
-
+//當使用者改變selet中的分類選項，將所選擇的分類名稱自動輸入到欄位裡面。
 $('select').on('change', function() {
   let a = this.value ;
   $('input[name=inputCategory]').val(a);

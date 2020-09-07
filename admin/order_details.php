@@ -1,6 +1,12 @@
 <?php 
 session_start();
-require_once("../sql/onnDB.php");
+
+if ($_SESSION["level"]!=999) {
+	$_SESSION["msgStatus"] = 11;//權限非管理員，進入訊息頁面會顯示權限不足提示。
+	header("Location:/PID_Assignment/status.php");
+	exit();
+  }
+
 
 if(!isset($_GET["id"])){
     die("id not found.");
@@ -10,12 +16,15 @@ if(!isset($_GET["id"])){
   if(!is_numeric($id)){
     die("id not a number.");
   }
-  
+
+  require_once("../sql/onnDB.php");  
   $sql=<<<sqls
   select dets_name, dets_unitprice, dets_quantity
   from tbl_orderdetail where ord_id = $id
   sqls;
   $result =mysqli_query($link, $sql);
+  mysqli_close($link);
+
 
   $orderTotal = 0;
 
@@ -48,7 +57,7 @@ if(!isset($_GET["id"])){
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
     <!-- Brand/logo -->
-    <a class="navbar-brand" href="/PID_Assignment/index.php">CC音饗</a>
+    <a class="navbar-brand" href="/PID_Assignment/index.php">CC音饗管理系統</a>
 
     <!-- Links -->
     <ul class="navbar-nav ml-auto">
@@ -58,8 +67,10 @@ if(!isset($_GET["id"])){
           <?php echo "{$_SESSION["uId"]}";?>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">我的訂單</a>
-          <a class="dropdown-item" href="/PID_Assignment/member/editor.php">編輯個人資料</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/orders_admin.php">訂單管理</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/member_admin.php">會員管理</a>
+          <a class="dropdown-item" href="/PID_Assignment/admin/commodity_admin.php">商品管理</a>
+
         </div>
       </li>
       <?php } ?>
@@ -68,12 +79,6 @@ if(!isset($_GET["id"])){
         <?php }else{ ?>
           <a class="nav-link" href="/PID_Assignment/member/login.php"><span class="fa fa-user"></span> 登入</a>
         <?php } ?>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/PID_Assignment/cart.php">
-          <span class="fa fa-shopping-cart fa-lg" style="color:Beige"></span> <span
-            class="badge badge-pill badge-danger"><?php if(isset($_SESSION["itemCountTotal"])){ echo "{$_SESSION["itemCountTotal"]}";}else{echo "0";} ?></span>
-        </a>
       </li>
     </ul>
   </nav>
@@ -94,15 +99,15 @@ if(!isset($_GET["id"])){
    <?php while ($row = mysqli_fetch_assoc($result)){?>
       <tr>
         <th scope="row"><?=$row["dets_name"] ?></th>
-           <td><?=$row["dets_unitprice"]?></td>
+           <td><?=number_format($row["dets_unitprice"])?></td>
            <td><?=$row["dets_quantity"]?></td>  
-           <td><?=($row["dets_unitprice"] * $row["dets_quantity"])?></td>  
+           <td><?="$".number_format(($row["dets_unitprice"] * $row["dets_quantity"]))?></td>  
       </tr>
       <?php $orderTotal += ($row["dets_unitprice"] * $row["dets_quantity"]); //計算訂單總額 ?>
    <?php } ?>
   </tbody>
 </table>
-<div class="row"><div class="col-10"></div><div class="col-2"><h6>&nbsp;總計&nbsp;&nbsp;&nbsp;&nbsp;$<?=$orderTotal?></h6></div></div>
+<div class="row"><div class="col-10"></div><div class="col-2 d-inline"><h6 style="display: inline;">&nbsp;總計&nbsp;&nbsp;&nbsp;&nbsp;</h6><h6 class="price" style="display: inline;">$<?=number_format($orderTotal)?></h6></div></div>
 <div class="row">
     <div class="col-10"></div>
     <div class="col-2">

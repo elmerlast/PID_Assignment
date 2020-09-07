@@ -134,9 +134,9 @@ if (isset($_POST["btnRemoveAll"])) {
      foreach ($items as $item){?> 
       <tr>
         <td><?= $item["info"] ?></td>
-        <td><?= $item["price"] ?></td>
-        <td><?= $item["qty"] ?></td>
-        <td><?= $item["subtotal"] ?></td>
+        <td><?= "$".number_format($item["price"]) ?></td>
+        <td style="text-align: center;"><?= $item["qty"] ?></td>
+        <td><?= "$".number_format($item["subtotal"]) ?></td>
         <td>
         <a href ="./cart.php?id=<?= $item["id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
         </td>
@@ -157,7 +157,8 @@ if (isset($_POST["btnRemoveAll"])) {
       
     </tbody>
   </table>
-  <div class="row"><div class="col-10"></div><div class="col-2"><h6>&nbsp;總計&nbsp;&nbsp;&nbsp;&nbsp;$<?=$cart->total?></h6></div></div>
+  <div class="row"><div class="col-10"></div><div class="col-2 d-inline"><h6 style="display: inline;">&nbsp;總計&nbsp;&nbsp;&nbsp;&nbsp;</h6><h6 class="price" style="display: inline;">$<?=number_format($cart->total)?></h6></div></div>
+  <div class="row"><div class="col">&nbsp;</div></div>
   <div class="row">
   <div class="col-9"></div>
     <div class="col-3  ">

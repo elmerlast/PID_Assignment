@@ -1,6 +1,14 @@
 <?php
 session_start();
 
+if ($_SESSION["level"]!=999) {
+	$_SESSION["msgStatus"] = 11;//權限非管理員，進入訊息頁面會顯示權限不足提示。
+	header("Location:/PID_Assignment/status.php");
+	exit();
+  }
+
+
+
 if(!isset($_GET["id"])){
 	die("id not found.");
 }
@@ -9,6 +17,9 @@ $id = $_GET["id"];
 if(!is_numeric($id)){
 	die("id not a number.");
 }
+
+require_once("../sql/onnDB.php");
+
 
 /*
  *使用者按下「取消」按鈕
@@ -46,26 +57,40 @@ if (isset($_POST["btnConfirm"])) {
 	$modBirthday = $_POST["inputBirthday"];
 	$modAuthority = $_POST["inputAuthority"];
 
-
+	if($_POST["inputPassword"]==""){//使用者沒有設置新密碼。
+		$sqlSTMT =<<<sqlSTMT
+		UPDATE tbl_users
+		SET m_name = '{$modName}',
+			m_email = '{$modEmail}',
+			m_gender = '{$modGender}',
+			m_phone = '{$modPhoneNumber}',
+			m_birthday = '{$modBirthday}',
+			m_level = '{$modAuthority}'
+		WHERE m_id = '{$id}'; 
+		sqlSTMT;
+	}else{                         //如果使用者有設置新密碼的話，更新使用者所輸入包刮新密碼的資料到資料庫。
+		$sqlSTMT =<<<sqlSTMT
+		UPDATE tbl_users
+		SET m_name = '{$modName}',
+			m_password = '{$modPassword}',
+			m_email = '{$modEmail}',
+			m_gender = '{$modGender}',
+			m_phone = '{$modPhoneNumber}',
+			m_birthday = '{$modBirthday}',
+			m_level = '{$modAuthority}'
+		WHERE m_id = '{$id}'; 
+		sqlSTMT;
+	}
 	
-	$sqlSTMT =<<<sqlSTMT
-	UPDATE tbl_users
-	SET m_name = '{$modName}',
-		m_password = '{$modPassword}',
-		m_email = '{$modEmail}',
-		m_gender = '{$modGender}',
-		m_phone = '{$modPhoneNumber}',
-		m_birthday = '{$modBirthday}',
-		m_level = '{$modAuthority}'
-	WHERE m_id = '{$id}'; 
-	sqlSTMT;//更新使用者所輸入的資料到資料庫
 	mysqli_query($link, $sqlSTMT) or die(mysqli_error($link));
-
-
-
+	mysqli_close($link);
+	$_SESSION["msgStatus"] = 10;//修改會員成功，進入訊息頁面會顯示成功提示。
+	header("Location:/PID_Assignment/status.php");
+	exit();
 
 
 }
+mysqli_close($link);
 
 
 ?>
@@ -106,7 +131,6 @@ if (isset($_POST["btnConfirm"])) {
 							<div class="col-6">
 								<h4 class="card-title mt-2">編輯會員資料</h4>
 							</div>
-							<!-- <div class="col-6" style="position: absolute; bottom: 0; right: 0;" ><p>己經有帳號了嗎 ? <a href="page-register.php"> 現在就登入！</a></p></div> -->
 						</div>
 					</header>
 					<article class="card-body">

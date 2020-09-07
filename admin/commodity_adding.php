@@ -1,7 +1,16 @@
 
 <?php
-require_once "../sql/onnDB.php";
+
 session_start();
+
+if ($_SESSION["level"]!=999) {
+	$_SESSION["msgStatus"] = 11;//權限非管理員，進入訊息頁面會顯示權限不足提示。
+	header("Location:/PID_Assignment/status.php");
+	exit();
+  }
+
+require_once("../sql/onnDB.php");
+
 
 function processFile($objFile) {
 	if ($objFile ["error"] != 0) {
@@ -46,6 +55,9 @@ if (isset($_POST["btnConfirm"])) {
 	$addingProductPrice = $_POST["inputPrice"];
 	$addingProductCategory = $_POST["inputCategory"];
 	$addPicturePath = "/PID_Assignment/img/".$_FILES["inputImage"]["name"];
+	$addingDescription = $_POST["inputDescription"];
+
+	
 
 
 
@@ -81,12 +93,12 @@ if (isset($_POST["btnConfirm"])) {
 
 	//新增商品至資料庫
 	$sqlStatement =<<<sql
-	INSERT INTO `tbl_product` (`ca_id`,`prd_name`,`prd_price`,`prd_images`)
+	INSERT INTO `tbl_product` (`ca_id`,`prd_name`,`prd_price`,`prd_images`,`prd_description`)
 	VALUES
-	({$caId},'{$addingProductName}',{$addingProductPrice},'{$addPicturePath}');
+	({$caId},'{$addingProductName}',{$addingProductPrice},'{$addPicturePath}','{$addingDescription}');
 	sql;
 	mysqli_query($link, $sqlStatement) or die("新增失敗");
-
+	mysqli_close($link);
 	$_SESSION["msgStatus"] = 7;//新增商品成功，進入訊息頁面會顯示成功提示。
 	header("Location:/PID_Assignment/status.php");
 	exit();
@@ -95,7 +107,7 @@ if (isset($_POST["btnConfirm"])) {
 	
 }
 
-
+mysqli_close($link);
 
 ?>
 
@@ -174,20 +186,18 @@ if (isset($_POST["btnConfirm"])) {
 								
 								
 								<div class="form-row">
-								<div class="col form-group">
-								<!-- <form action="register.php" method="post" > -->
-								<div style="margin-bottom: 20px;">
-  									      <input type="file" name="inputImage" id="upload" class="btn btn-edc" value="新增圖片">
-  								</div>
-								<!-- </form> -->
-
-								</div> <!-- form-group end.// -->
+									<div class="col form-group">
+										<div style="margin-bottom: 20px;">
+											<label>新增圖片</label>
+  									    	<input type="file" name="inputImage" id="upload" class="btn btn-edc" value="新增圖片">
+  										</div>
+									</div> <!-- form-group end.// -->
 								</div> <!-- form-row end.// -->
 
-
-
-
-							
+								<div class="form-group">
+									<label for="disc">商品介紹</label>
+									<textarea class="form-control" style="resize: none" name="inputDescription" rows="3"></textarea>
+								</div>
 								<div class="form-group text-right">
 								<button type="submit" class="btn btn-outline-success" name="btnConfirm" id="btnConfirm"
 									value="btnConfirm"> 確認 </button>

@@ -4,6 +4,7 @@ include "wfCart/wfcart.php";
 require_once "./sql/onnDB.php";
 session_start();
 
+
 $cart = &$_SESSION['wfcart']; // 指向購物車物件
 if (!is_object($cart)) {
     $cart = new wfCart();
@@ -27,7 +28,7 @@ if (isset($_POST["btnAddToCart"])) {
 }
 
 if(isset($_GET["signout"])){
-  $_SESSION["uId"] = null;
+  unset($_SESSION["uId"]);
   $_SESSION["msgStatus"] = 3;//己登出，進入訊息頁面會顯示登出提示。
   header("Location:/PID_Assignment/status.php");
   exit();
@@ -164,29 +165,31 @@ $catResult = mysqli_query($link, $sqlStatement);
         <?php while ($row = mysqli_fetch_assoc($catProductResult)) {?>
 
 
-        <div class="col-sm-4">
-          <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="<?=$row["prd_images"]?>" alt="沒有圖片">
-            <div class="card-body">
-              <h6 class="card-subtitle mb-2 text-muted"><?=$row["prd_name"]?></h6>
-              <p class="card-text price"><?="$" . $row["prd_price"]?></p>
-              <div class="row">
-                <div class="col">
+          <div class="col-sm-4">
+            <div class="card" style="width: 18rem;">
+              <img class="card-img-top" src="<?=$row["prd_images"]?>" alt="無法顯示圖片">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted"><?=$row["prd_name"]?></h6>
+                <p class="card-text price"><?="$" . number_format($row["prd_price"])?></p>
+                <div class="row">
+                  <div class="col">
                     <form action="" method="post">
                       <input type="hidden" name="prd_id" value="<?=$row["prd_id"]?>" />
                       <input type="hidden" name="prd_price" value="<?=$row["prd_price"]?>" />
                       <input type="hidden" name="prd_name" value="<?=$row["prd_name"]?>" />
                       <button class="btn btn-danger" name="btnAddToCart" value="addItem" type="submit">加入購物車</button>
-                      <input type="hidden" name="Categories" value="<?=$_POST["Categories"]?>" />
                     </form>
-                </div>
-                <div class="col">
-                  <a href="#" class="btn btn-primary">詳細資訊</a>
+                  </div>
+                  <div class="col">
+                      <button type="button" id="btnDetail" class="btn btn-primary btndetail" value="<?=$row["prd_id"]?>" data-toggle="modal" data-target="#detailModal">
+                        詳細資訊
+                      </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+
 
         <?php $itemPageCount += 1;
         if ($itemPageCount >= 3) {?>
@@ -223,7 +226,7 @@ $catResult = mysqli_query($link, $sqlStatement);
               <img class="card-img-top" src="<?=$row["prd_images"]?>" alt="無法顯示圖片">
               <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted"><?=$row["prd_name"]?></h6>
-                <p class="card-text price"><?="$" . $row["prd_price"]?></p>
+                <p class="card-text price"><?="$" . number_format($row["prd_price"])?></p>
                 <div class="row">
                   <div class="col">
                     <form action="" method="post">
@@ -234,14 +237,9 @@ $catResult = mysqli_query($link, $sqlStatement);
                     </form>
                   </div>
                   <div class="col">
-                  <form class="detail" action="index.php" method="post">
-                      <input type="hidden" id="prd_id" value="<?=$row["prd_id"]?>" />
-                      <input type="hidden" id="prd_price" value="<?=$row["prd_price"]?>" />
-                      <input type="hidden" id="prd_name" value="<?=$row["prd_name"]?>" />
-                      <input type="hidden" id="prd_description" value="<?=$row["prd_description"]?>" />
-                      <input class="btn btn-primary" name="btnDetail" value="詳細資訊" type="submit"
-                        data-toggle="modal" data-target="#detailModal"></button>
-                    </form>
+                      <button type="button" id="btnDetail" class="btn btn-primary btndetail" value="<?=$row["prd_id"]?>" data-toggle="modal" data-target="#detailModal">
+                        詳細資訊
+                      </button>
                   </div>
                 </div>
               </div>
@@ -274,30 +272,30 @@ $catResult = mysqli_query($link, $sqlStatement);
           <div class="row">
             <?php while ($row = mysqli_fetch_assoc($searchResult)) {?>
 
-            <div class="col-sm-4">
-              <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="<?=$row["prd_images"]?>" alt="無法顯示圖片">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted"><?=$row["prd_name"]?></h6>
-                  <p class="card-text price"><?="$" . $row["prd_price"]?></p>
-                  <div class="row">
-                    <div class="col">
-                      <form action="" method="post">
-                        <input type="hidden" name="prd_id" value="<?=$row["prd_id"]?>" />
-                        <input type="hidden" name="prd_price" value="<?=$row["prd_price"]?>" />
-                        <input type="hidden" name="prd_name" value="<?=$row["prd_name"]?>" />
-                        <button class="btn btn-danger" name="btnAddToCart" value="addItem" type="submit">加入購物車</button>
-                        <input type="hidden" name="inputProductName" value="<?=$_POST["inputProductName"]?>" />
-                        <input type="hidden" name="Categories" value="全部產品" />
-                      </form>
-                    </div>
-                    <div class="col">
-                      <a href="#" class="btn btn-primary">詳細資訊</a>
-                    </div>
+          <div class="col-sm-4">
+            <div class="card" style="width: 18rem;">
+              <img class="card-img-top" src="<?=$row["prd_images"]?>" alt="無法顯示圖片">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted"><?=$row["prd_name"]?></h6>
+                <p class="card-text price"><?="$" . number_format($row["prd_price"])?></p>
+                <div class="row">
+                  <div class="col">
+                    <form action="" method="post">
+                      <input type="hidden" name="prd_id" value="<?=$row["prd_id"]?>" />
+                      <input type="hidden" name="prd_price" value="<?=$row["prd_price"]?>" />
+                      <input type="hidden" name="prd_name" value="<?=$row["prd_name"]?>" />
+                      <button class="btn btn-danger" name="btnAddToCart" value="addItem" type="submit">加入購物車</button>
+                    </form>
+                  </div>
+                  <div class="col">
+                      <button type="button" id="btnDetail" class="btn btn-primary btndetail" value="<?=$row["prd_id"]?>" data-toggle="modal" data-target="#detailModal">
+                        詳細資訊
+                      </button>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
             <?php $itemPageCount += 1;
         if ($itemPageCount >= 3) {?>
           </div>
@@ -318,57 +316,45 @@ $catResult = mysqli_query($link, $sqlStatement);
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="detailModalLabel">Modal title</h5>
+                  <h5 class="modal-title" id="detailModalLabel">詳細資訊</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  <p>ddds</p>
-                  <?php var_dump($_POST); ?>
+                  <p id="detext">modal</p>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
                 </div>
               </div>
             </div>
           </div>
 
+ 
+
 
 
 </body>
-<script>
+
+<script type="text/javascript">
+
+$(document).ready(init);
 
 
-$( document ).ready(function() {
-  $(".detail").submit(function(e) {
+function init() {
+	$(".btndetail").click(itemDetail);
+}
 
-var form = $(this);
-var url = form.attr('action');
+function itemDetail() {
+	var s = $(this).val();
+	$.get('itemDetail.php?id=' + s, detailBack)
+}
 
-$.ajax({
-           type: "post",
-           url: url,
-           data: form.serialize(), // serializes the form's elements.
-           dataType : 'json', // changing data type to json
-           success: function(data)
-           {
-            alert("here");
-            alert(data);
-           }
-         });
-e.preventDefault(); // avoid to execute the actual submit of the form.
-});
-});
-
-
-
+function detailBack(data) {
+	$(".modal-body").html(data);
+}
 
 </script>
-
-
-
-
 
 </html>

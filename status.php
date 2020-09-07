@@ -49,12 +49,28 @@ session_start();
           header("Refresh:2; url=/PID_Assignment/index.php");
           exit();
         case 7:
-          echo '商品新增成功，2秒後自動跳轉到商品管理首頁';
+          echo '新增成功，2秒後自動跳轉到商品管理首頁';
           header("Refresh:2; url=/PID_Assignment/admin/commodity_admin.php");
           exit();
         case 8:
-          echo '商品修改成功，2秒後自動跳轉到商品管理首頁';
+          echo '修改成功，2秒後自動跳轉到商品管理首頁';
           header("Refresh:2; url=/PID_Assignment/admin/commodity_admin.php");
+          exit();
+        case 9:
+          echo '新增成功，2秒後自動跳轉到會員管理首頁';
+          header("Refresh:2; url=/PID_Assignment/admin/member_admin.php");
+          exit();
+        case 10:
+          echo '修改成功，2秒後自動跳轉到會員管理首頁';
+          header("Refresh:2; url=/PID_Assignment/admin/member_admin.php");
+          exit();
+        case 11:
+          echo '<h5 style="color:red;">權限不足。2秒後自動跳轉到首頁</h5>';
+          header("Refresh:2; url=/PID_Assignment/index.php");
+          exit();
+        case 12:
+          echo '<h5 style="color:red;">您目前被禁止購物。2秒後自動跳轉到首頁</h5>';
+          header("Refresh:2; url=/PID_Assignment/index.php");
           exit();
       }
 

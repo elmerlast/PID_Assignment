@@ -1,6 +1,13 @@
 <?php 
 session_start();
-require_once "../sql/onnDB.php";
+
+if ($_SESSION["level"]!=999) {
+	$_SESSION["msgStatus"] = 11;//權限非管理員，進入訊息頁面會顯示權限不足提示。
+	header("Location:/PID_Assignment/status.php");
+	exit();
+  }
+
+require_once("../sql/onnDB.php");
 
 
 
@@ -40,7 +47,7 @@ if (isset($_POST["btnSearch"]) && $_POST["inputMemberUserName"]!="") {
 }
 
 
-
+mysqli_close($link);
 
 
 ?>
@@ -72,7 +79,7 @@ if (isset($_POST["btnSearch"]) && $_POST["inputMemberUserName"]!="") {
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
     <!-- Brand/logo -->
-    <a class="navbar-brand" href="/PID_Assignment/index.php">CC音饗管理系統</a>
+    <a class="navbar-brand" href="">CC音饗管理系統</a>
 
     <!-- Links -->
     <ul class="navbar-nav ml-auto">
@@ -115,7 +122,6 @@ if (isset($_POST["btnSearch"]) && $_POST["inputMemberUserName"]!="") {
             </form>
           </th>
     </tr>
-    <?phpif ?>
     <tr>
       <th scope="col">訂單編號</th>
       <th scope="col">會員編號</th>
@@ -135,7 +141,7 @@ if (isset($_POST["btnSearch"]) && $_POST["inputMemberUserName"]!="") {
            <td><?=$row["m_id"]?></td>
            <td><?=$row["m_username"]?></td>
            <td><?=$row["ord_paytype"]?></td>
-           <td><?=$row["ord_total"]?></td>  
+           <td class="price"><?="$".number_format($row["ord_total"])?></td>  
            <td><?=$row["ord_purchasetime"]?></td>  
            <td><?=$row["ord_status"]?></td>
            <td>
@@ -151,7 +157,7 @@ if (isset($_POST["btnSearch"]) && $_POST["inputMemberUserName"]!="") {
         </td>
         <?php }elseif($mIdNotFound == true){ ?>
         <td colspan="8">
-            <h5 style="text-align:center;">查詢不到該會員</h5>
+            <h5 style="text-align:center;">查詢不到該會員。</h5>
         </td>
         <?php }else{ ?>
         <td colspan="8">
@@ -167,8 +173,8 @@ if (isset($_POST["btnSearch"]) && $_POST["inputMemberUserName"]!="") {
 <div class="row">
     <div class="col-10"></div>
     <div class="col-2">
-      <a href="/PID_Assignment/index.php" class="btn btn-info">&emsp;返回首頁&emsp;</a>
-    </div>
+      <?php if(isset($_POST["inputMemberUserName"])){echo '<a href="orders_admin.php" class="btn btn-info">&emsp;返回&emsp;</a>';} ?>
+</div>
 </div>
 
 

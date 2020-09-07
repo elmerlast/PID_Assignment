@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <?php
 include "../wfCart/wfcart.php";
-require_once "../sql/onnDB.php";
 session_start();
+
+if ($_SESSION["level"]!=999) {
+	$_SESSION["msgStatus"] = 11;//權限非管理員，進入訊息頁面會顯示權限不足提示。
+	header("Location:/PID_Assignment/status.php");
+	exit();
+  }
+
+require_once("../sql/onnDB.php");
 
 $cart = &$_SESSION['wfcart']; // new一個購物車物件
 if (!is_object($cart)) {
@@ -11,9 +18,37 @@ if (!is_object($cart)) {
 
 
 
+if (isset($_POST["btnDeleteCat"])) {
+  //確認資料庫是否存在資料，且如果不是最新的資料刪除全部的資料表紀錄
+  $sql = <<<STMT
+  SELECT p.prd_name 
+  FROM `tbl_category` as c 
+  INNER JOIN `tbl_product` as p 
+  ON p.ca_id = c.ca_id 
+  where ca_name = '{$_POST["Categories"]}' 
+  STMT;
+
+  $result = mysqli_query($link, $sql);
+  $nums = mysqli_num_rows($result);
+  if($_POST["Categories"] =="全部產品"){
+    $deleteError = 1;
+  }elseif($nums == 0){
+    $sql = <<<STMT
+    DELETE FROM tbl_category
+    WHERE ca_name = '{$_POST["Categories"]}';
+    STMT;
+    mysqli_query($link, $sql) or die("刪除分類失敗");
+    $_POST["Categories"] = "全部產品";
+  }else{
+    $deleteError = 2;
+  }
+  
+}
+
 if (isset($_POST["btnSearch"])) {
   $_POST["Categories"] = "全部產品";
 }
+
 
 
 
@@ -61,7 +96,7 @@ $catResult = mysqli_query($link, $sqlStatement);
 
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
     <!-- Brand/logo -->
-    <a class="navbar-brand" href="/PID_Assignment/index.php">CC音饗管理系統</a>
+    <a class="navbar-brand" >CC音饗管理系統</a>
 
     <!-- Links -->
     <ul class="navbar-nav ml-auto">
@@ -110,7 +145,7 @@ $catResult = mysqli_query($link, $sqlStatement);
     </tr>
     <tr>
           <th colspan="5">
-            <form method="post" action="">
+            <form method="post" action="" >
               <div class="form-group row">
                 <label class="col-2" for="Categories">商品分類：</label>
                 <select id="Categories" name="Categories" class="col-4 form-control">
@@ -122,8 +157,22 @@ $catResult = mysqli_query($link, $sqlStatement);
                 </select>
                 <button name="btnCatFilter" id="btnCatFilter" type="submit" class="btn btn-primary"
                   value="btnCatFilter">篩選</button>
+                <button name="btnDeleteCat" id="btnDeleteCat" type="submit" class="btn btn-danger" value="btnDeleteCat"
+                  value="btnCatFilter">刪除分類標籤</button>
               </div>
+              <?php
+                switch ($deleteError)
+                {
+                  case 1:
+                    echo('<label style="color: red;" >&emsp;※無效操作，您不可刪除此分類標籤。</label>');
+                  break;  
+                  case 2:
+                    echo('<label style="color: red;" >&emsp;※尚有此分類商品存在，請先將該分類商品刪除再進行刪除動作。</label>');
+                  break;
+                }  
+              ?>
             </form>
+
 
           </th>
         </tr>
@@ -148,6 +197,7 @@ $catResult = mysqli_query($link, $sqlStatement);
     where ca_name = '{$_POST["Categories"]}';
     categoryProductSql;
     $catProductResult = mysqli_query($link, $sqlStatement);
+    mysqli_close($link);
 
     if(mysqli_num_rows($catProductResult) > 0){ 
       while ($row = mysqli_fetch_assoc($catProductResult)) { ?>
@@ -155,7 +205,7 @@ $catResult = mysqli_query($link, $sqlStatement);
              <th scope="row"><?=$row["prd_id"] ?></th>
              <td><?=$row["ca_name"]?></td>
              <td><?=$row["prd_name"]?></td>
-             <td><?=$row["prd_price"]?></td>
+             <td><?="$".number_format($row["prd_price"])?></td>
              <td>
                <a href ="./commodity_update.php?id=<?= $row["prd_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
                <a href ="./commodity_delete.php?id=<?= $row["prd_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
@@ -177,6 +227,7 @@ $catResult = mysqli_query($link, $sqlStatement);
     on tbl_category.ca_id = tbl_product.ca_id
     mulity;
     $result = mysqli_query($link, $sqlStatement);
+    mysqli_close($link);
 
       if(mysqli_num_rows($result) > 0){ 
         while ($row = mysqli_fetch_assoc($result)) { ?>
@@ -184,7 +235,7 @@ $catResult = mysqli_query($link, $sqlStatement);
              <th scope="row"><?=$row["prd_id"] ?></th>
              <td><?=$row["ca_name"]?></td>
              <td><?=$row["prd_name"]?></td>
-             <td><?=$row["prd_price"]?></td>
+             <td><?="$".number_format($row["prd_price"])?></td>
              <td>
                <a href ="./commodity_update.php?id=<?= $row["prd_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
                <a href ="./commodity_delete.php?id=<?= $row["prd_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
@@ -207,6 +258,7 @@ $catResult = mysqli_query($link, $sqlStatement);
           where tbl_product.prd_name like '%{$_POST["inputProductName"]}%';
           searchsql;
           $searchResult = mysqli_query($link, $sqlStatement);
+          mysqli_close($link);
 
           if(mysqli_num_rows($searchResult) > 0){ 
             while ($row = mysqli_fetch_assoc($searchResult)) { ?>
@@ -214,7 +266,7 @@ $catResult = mysqli_query($link, $sqlStatement);
                  <th scope="row"><?=$row["prd_id"] ?></th>
                  <td><?=$row["ca_name"]?></td>
                  <td><?=$row["prd_name"]?></td>
-                 <td><?=$row["prd_price"]?></td>
+                 <td><?="$".number_format($row["prd_price"])?></td>
                  <td>
                    <a href ="./commodity_update.php?id=<?= $row["prd_id"]?>" class="btn btn btn-success btn-sm"><i class="fa fa-pencil-square-o "></i></a>
                    <a href ="./commodity_delete.php?id=<?= $row["prd_id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>

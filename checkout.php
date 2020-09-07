@@ -13,6 +13,12 @@ if (!isset($_SESSION["uId"])) {
 	exit();
 }
 
+if ($_SESSION["level"] < 3) {
+	$_SESSION["msgStatus"] = 12;//禁止購物會員，進入訊息頁面會顯示權限不足提示。
+	header("Location:/PID_Assignment/status.php");
+	exit();
+  }
+
 
 
 
@@ -123,15 +129,15 @@ $row = mysqli_fetch_array($result);
      foreach ($items as $item){?> 
       <tr>
         <td><?= $item["info"] ?></td>
-        <td><?= $item["price"] ?></td>
+        <td><?="$".number_format($item["price"]) ?></td>
         <td><?= $item["qty"] ?></td>
-        <td><?= $item["subtotal"] ?></td>
+        <td><?="$".number_format($item["subtotal"]) ?></td>
       </tr>
     <?php }//end of foreach?>
       
     </tbody>
   </table>
-  <div class="row"><div class="col-10"></div><div class="col-2"><h6>&nbsp;總計&nbsp;&nbsp;&nbsp;&nbsp;$<?=$cart->total?></h6></div></div>
+  <div class="row"><div class="col-10"></div><div class="col-2 d-inline"><h6 style="display: inline;">總計&nbsp;&nbsp;&nbsp;&nbsp;</h6><h6 class="price" style="display: inline;">$<?=number_format($cart->total)?></h6></div></div>
     </form>
   </div>
 
