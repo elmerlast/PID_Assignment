@@ -3,7 +3,7 @@
 include "../wfCart/wfcart.php";
 session_start();
 
-if ($_SESSION["level"]!=999) {
+if ($_SESSION["level"]!=999 || !isset($_SESSION["uId"])) {
 	$_SESSION["msgStatus"] = 11;//權限非管理員，進入訊息頁面會顯示權限不足提示。
 	header("Location:/PID_Assignment/status.php");
 	exit();
@@ -83,6 +83,7 @@ $catResult = mysqli_query($link, $sqlStatement);
   <title>CC音饗管理系統-商品管理</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <link rel="stylesheet" href="\PID_Assignment\css\bootstrap.min.css">
   <link rel="stylesheet" href="\PID_Assignment\css\store_index.css">
   <script src="\PID_Assignment\js\jquery.min.js"></script>

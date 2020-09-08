@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if ($_SESSION["level"]!=999) {
+if ($_SESSION["level"]!=999|| !isset($_SESSION["uId"])) {
 	$_SESSION["msgStatus"] = 11;//權限非管理員，進入訊息頁面會顯示權限不足提示。
 	header("Location:/PID_Assignment/status.php");
 	exit();
@@ -75,16 +75,15 @@ mysqli_close($link);
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>新增會員</title>
 	<!-- Bootstrap core CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js">
+
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
-
-
-	<!-- Custom styles for this template -->
-	<!-- <link rel="stylesheet" type="text/css" href="/RD5_Assignment/CSS/grid.css"> -->
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="\PID_Assignment\css\bootstrap.min.css">
+  	<link rel="stylesheet" href="\PID_Assignment\css\store_index.css">
+  	<script src="\PID_Assignment\js\jquery.min.js"></script>
+  	<script src="\PID_Assignment\js\bootstrap.min.js"></script>
+  	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  	<script src="\PID_Assignment\js\jquery.mycart.js"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
 
 
 </head>

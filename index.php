@@ -59,6 +59,7 @@ $catResult = mysqli_query($link, $sqlStatement);
   <title>CC購物</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  
   <link rel="stylesheet" href="\PID_Assignment\css\bootstrap.min.css">
   <link rel="stylesheet" href="\PID_Assignment\css\store_index.css">
   <script src="\PID_Assignment\js\jquery.min.js"></script>

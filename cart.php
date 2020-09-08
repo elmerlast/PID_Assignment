@@ -41,6 +41,18 @@ if (isset($_POST["btnRemoveAll"])) {
   }
 }
 
+if(isset($_POST["btnUpdate"])){ 
+  $items = $cart->get_contents();
+  foreach ($items as $item){
+    if($_POST["{$item["id"]}"]){
+      $cart->edit_item($item["id"],$_POST["{$item["id"]}"]);
+    }
+
+  }
+
+}
+
+
 
 
 
@@ -55,6 +67,7 @@ if (isset($_POST["btnRemoveAll"])) {
   <title>CC購物</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  
   <link rel="stylesheet" href="\PID_Assignment\css\bootstrap.min.css">
   <link rel="stylesheet" href="\PID_Assignment\css\store_index.css">
   <script src="\PID_Assignment\js\jquery.min.js"></script>
@@ -126,16 +139,13 @@ if (isset($_POST["btnRemoveAll"])) {
       </tr>
     </thead>
     <tbody>
-    <?php if(isset($_POST["btnUpdate"])){ 
-    //暫時拿掉修改的功能
-
-     }elseif($_SESSION["itemCountTotal"] > 0){
+    <?php if($_SESSION["itemCountTotal"] > 0){
      $items = $cart->get_contents();
      foreach ($items as $item){?> 
       <tr>
         <td><?= $item["info"] ?></td>
         <td><?= "$".number_format($item["price"]) ?></td>
-        <td style="text-align: center;"><?= $item["qty"] ?></td>
+        <td style="text-align: center;"><input type="number" style="text-align: right;  width: 45px" id="fname" name="<?= $item["id"]?>" min="1" max="99"  value="<?= $item["qty"] ?>"></td>
         <td><?= "$".number_format($item["subtotal"]) ?></td>
         <td>
         <a href ="./cart.php?id=<?= $item["id"]?>" class="btn btn btn-danger btn-sm"><i class="fa fa-times "></i></a>
@@ -160,10 +170,12 @@ if (isset($_POST["btnRemoveAll"])) {
   <div class="row"><div class="col-10"></div><div class="col-2 d-inline"><h6 style="display: inline;">&nbsp;總計&nbsp;&nbsp;&nbsp;&nbsp;</h6><h6 class="price" style="display: inline;">$<?=number_format($cart->total)?></h6></div></div>
   <div class="row"><div class="col">&nbsp;</div></div>
   <div class="row">
-  <div class="col-9"></div>
-    <div class="col-3  ">
+  <div class="col-8"></div>
+    <div class="col-4  ">
       <button name="btnRemoveAll" id="btnRemoveAll" type="submit" class="btn btn-outline-success "
            value="btnRemoveAll">清空購物車</button>
+      <button name="btnUpdate" id="btnUpdate" type="submit" class="btn btn-outline-info "
+           value="btnUpdate">修改數量</button>
       <button name="btnCheckout" id="btnCheckout" type="submit" class="btn btn-success float-right"
            value="btnCheckout" <?php if($_SESSION["itemCountTotal"] == 0) {echo "disabled";}?> >結帳</button>
     </div>

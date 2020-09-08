@@ -1,5 +1,12 @@
 <?php 
 session_start();
+
+//無登入會員自動跳轉到登入頁面
+if (!isset($_SESSION["uId"])) {
+	header("location: /PID_Assignment/member/login.php");
+	exit();
+}
+
 require_once "../sql/onnDB.php";
 
 //透過session中的使用者名稱取得會員編號
@@ -33,14 +40,11 @@ $result =mysqli_query($link, $sql);
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>我的訂單</title>
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="\PID_Assignment\css\bootstrap.min.css">
 <link rel="stylesheet" href="\PID_Assignment\css\store_index.css">
 <script src="\PID_Assignment\js\jquery.min.js"></script>
 <script src="\PID_Assignment\js\bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="\PID_Assignment\js\jquery.mycart.js"></script>
 
 
